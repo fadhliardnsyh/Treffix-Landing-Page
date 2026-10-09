@@ -2,13 +2,15 @@ import Image from "next/image";
 
 type BrandLogoProps = {
   homeLabel: string;
+  homeHref?: string;
   priority?: boolean;
   className?: string;
+  imageClassName?: string;
 };
 
-export function BrandLogo({ homeLabel, priority = false, className = "" }: BrandLogoProps) {
+export function BrandLogo({ homeLabel, homeHref = "#top", priority = false, className = "", imageClassName = "h-10" }: BrandLogoProps) {
   return (
-    <a href="#top" aria-label={homeLabel} className={`flex w-fit items-center ${className}`}>
+    <a href={homeHref} aria-label={homeLabel} className={`flex w-fit items-center ${className}`}>
       <Image
         src="/treffix-logo.png"
         alt=""
@@ -16,8 +18,8 @@ export function BrandLogo({ homeLabel, priority = false, className = "" }: Brand
         height={796}
         sizes="150px"
         priority={priority}
-        className="h-10 shrink-0 object-contain"
-        style={{ width: "auto", height: "40px" }}
+        className={`${imageClassName} shrink-0 object-contain`}
+        style={{ width: "auto" }}
       />
     </a>
   );

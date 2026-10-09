@@ -1,374 +1,296 @@
-﻿"use client";
+"use client";
 
-import { useRef, useState } from "react";
-import type { KeyboardEvent } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Check } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Camera } from "lucide-react";
+import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import type { Copy, Lang } from "@/components/content";
 import { products } from "@/components/content";
-import { ButtonLink } from "@/components/ui/button-link";
-import { Reveal } from "@/components/ui/reveal";
-import { SectionHeading } from "@/components/ui/section-heading";
 
 type Product = (typeof products)[number];
 
 export function SolutionsSection({
   content,
   language,
-  contactLink,
 }: {
   content: Copy;
   language: Lang;
-  contactLink?: string;
 }) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const pendingProductIndexRef = useRef<number | null>(null);
   const [activeProductId, setActiveProductId] = useState<Product["id"]>(products[0].id);
   const prefersReducedMotion = useReducedMotion() ?? false;
-  const tabsRef = useRef<HTMLDivElement>(null);
-  const activeProduct = products.find((product) => product.id === activeProductId) ?? products[0];
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
   const productDescriptions: Record<Product["id"], string> = {
     FixTrack: content.track,
     FixWork: content.work,
     FixSight: content.sight,
   };
+  const solutionsTitleLines = content.solutionsTitle.split("\n");
+  const solutionsTitleLabel = solutionsTitleLines.join(" ");
 
-  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, productId: Product["id"]) {
-    const currentIndex = products.findIndex((product) => product.id === productId);
-    let nextIndex = currentIndex;
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    const index = Math.min(products.length - 1, Math.floor(Math.max(0, Math.min(0.9999, progress)) * products.length));
+    const pendingIndex = pendingProductIndexRef.current;
+    if (pendingIndex !== null) {
+      if (index !== pendingIndex) return;
+      pendingProductIndexRef.current = null;
+    }
+    const nextId = products[index]!.id;
+    setActiveProductId((current) => current === nextId ? current : nextId);
+  });
 
-    if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % products.length;
-    else if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + products.length) % products.length;
-    else if (event.key === "Home") nextIndex = 0;
-    else if (event.key === "End") nextIndex = products.length - 1;
-    else return;
+  useEffect(() => {
+    const interruptProgrammaticScroll = () => {
+      pendingProductIndexRef.current = null;
+    };
+    const interruptWithKey = (event: KeyboardEvent) => {
+      if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) {
+        interruptProgrammaticScroll();
+      }
+    };
 
-    event.preventDefault();
-    const nextProduct = products[nextIndex];
-    setActiveProductId(nextProduct.id);
-    tabsRef.current?.querySelector<HTMLButtonElement>(`#solution-tab-${nextProduct.id}`)?.focus();
+    window.addEventListener("wheel", interruptProgrammaticScroll, { passive: true });
+    window.addEventListener("touchstart", interruptProgrammaticScroll, { passive: true });
+    window.addEventListener("pointerdown", interruptProgrammaticScroll, { passive: true });
+    window.addEventListener("keydown", interruptWithKey);
+    return () => {
+      window.removeEventListener("wheel", interruptProgrammaticScroll);
+      window.removeEventListener("touchstart", interruptProgrammaticScroll);
+      window.removeEventListener("pointerdown", interruptProgrammaticScroll);
+      window.removeEventListener("keydown", interruptWithKey);
+    };
+  }, []);
+
+  useEffect(() => {
+    const progress = scrollYProgress.get();
+    const index = Math.min(products.length - 1, Math.floor(Math.max(0, Math.min(0.9999, progress)) * products.length));
+    setActiveProductId(products[index]!.id);
+  }, [scrollYProgress]);
+
+  function scrollToProduct(index: number) {
+    const section = sectionRef.current;
+    if (!section) return;
+    const scrollRange = Math.max(0, section.offsetHeight - window.innerHeight);
+    const sectionStart = window.scrollY + section.getBoundingClientRect().top;
+    const progressTarget = (index + 0.5) / products.length;
+    pendingProductIndexRef.current = index;
+    setActiveProductId(products[index]!.id);
+    window.scrollTo({
+      top: sectionStart + scrollRange * progressTarget,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
   }
 
   return (
-    <section id="solutions" className="bg-[#f4f8ff] py-24 sm:py-32">
-      <div className="container-wide">
-        <Reveal>
-          <div className="grid gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,.85fr)] md:items-end md:gap-12">
-            <SectionHeading
-              eyebrow={content.solutionsEyebrow}
-              title={content.solutionsTitle}
-              className="max-w-[700px]"
-            />
-            <p className="max-w-[450px] text-[15px] leading-7 text-slate-600 md:justify-self-end">
-              {content.solutionsText}
+    <section
+      ref={sectionRef}
+      id="solutions"
+      className="relative isolate min-h-[210svh] bg-[#111214] text-white sm:min-h-[230svh] lg:min-h-[280vh]"
+    >
+      <div className="container-wide sticky top-0 mx-auto flex min-h-svh flex-col justify-center py-6 sm:py-8 lg:py-12">
+        <header>
+          <h2 className="w-full max-w-none text-[clamp(.9rem,5vw,4.25rem)] font-medium leading-[1.08] tracking-[-.05em]">
+            {solutionsTitleLines.map((line) => (
+              <span key={line} className="block whitespace-nowrap">{line}</span>
+            ))}
+          </h2>
+        </header>
+
+        <div className="mt-5 grid min-h-0 gap-4 sm:mt-7 sm:gap-6 lg:mt-9 lg:flex-1 lg:grid-cols-[minmax(280px,.85fr)_minmax(0,1.5fr)] lg:items-center lg:gap-8">
+          <aside className="flex flex-col justify-between gap-3 lg:h-[min(64svh,580px)] lg:py-2">
+            <p className="hidden max-w-[420px] text-[14px] leading-7 text-white/60 lg:block">
+              {language === "id"
+                ? "Pilih solusi sesuai kebutuhan armada, pengelolaan karyawan, atau pemantauan area kerja."
+                : "Choose a solution for fleet operations, employee management, or workplace monitoring."}
             </p>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.08}>
-          <div className="mt-10 rounded-[28px] border border-[#dce7f5] bg-white p-3 shadow-[0_18px_55px_rgba(18,57,105,.07)] sm:mt-12 sm:p-4">
-            <div
-              ref={tabsRef}
-              role="tablist"
-              aria-label={content.solutionsTitle}
-              aria-orientation="horizontal"
-              className="grid grid-cols-3 gap-1.5 rounded-[19px] bg-[#f2f6fc] p-1.5 mx-auto w-full max-w-[680px] sm:gap-2"
-            >
-              {products.map((product) => (
-                <ProductTab
-                  key={product.id}
-                  product={product}
-                  active={activeProductId === product.id}
-                  onSelect={() => setActiveProductId(product.id)}
-                  onKeyDown={(event) => handleTabKeyDown(event, product.id)}
-                />
-              ))}
+            <div role="group" aria-label={solutionsTitleLabel} className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:gap-0">
+              {products.map((product, index) => {
+                const active = activeProductId === product.id;
+                return (
+                  <button
+                    key={product.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => scrollToProduct(index)}
+                    className={`group flex min-h-11 min-w-0 items-center gap-2 border-b px-1 py-2 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 lg:min-h-[72px] lg:gap-4 lg:px-0 ${active ? "border-blue-400/70 text-white" : "border-white/10 text-white/45 hover:text-white/80"}`}
+                  >
+                    <span className={`shrink-0 font-mono text-[10px] tracking-[.12em] ${active ? "text-blue-400" : "text-white/35"}`}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[11px] font-semibold sm:text-xs lg:text-sm">{product.id}</span>
+                      <span className="mt-1 hidden text-[11px] leading-4 text-white/45 lg:block">{productDescriptions[product.id]}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+          </aside>
 
-            <div
-              id="solution-panel"
-              role="tabpanel"
-              aria-labelledby={`solution-tab-${activeProduct.id}`}
-              aria-live="polite"
-              className="mt-3 rounded-[22px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4"
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeProduct.id}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, y: -6 }}
-                  transition={{ duration: prefersReducedMotion ? 0 : 0.22 }}
-                  className="grid overflow-hidden rounded-[22px] bg-white md:min-h-[430px] md:grid-cols-[minmax(0,1.08fr)_minmax(300px,.92fr)]"
-                >
-                  <ProductDetail
-                    product={activeProduct}
-                    category={productDescriptions[activeProduct.id]}
-                    language={language}
-                    content={content}
-                    contactLink={contactLink}
-                  />
-                  <ProductVisual product={activeProduct} index={products.findIndex((product) => product.id === activeProduct.id)} reducedMotion={prefersReducedMotion} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
+          <div
+            role="group"
+            aria-label={solutionsTitleLabel}
+            className="flex h-[min(54svh,470px)] min-h-[350px] min-w-0 gap-2 sm:h-[min(58svh,540px)] sm:min-h-[420px] sm:gap-3 lg:h-[min(64svh,580px)] lg:min-h-[460px]"
+          >
+            {products.map((product, index) => (
+              <ProductAccordionCard
+                key={product.id}
+                product={product}
+                category={productDescriptions[product.id]}
+                language={language}
+                active={activeProductId === product.id}
+                reducedMotion={prefersReducedMotion}
+                onSelect={() => scrollToProduct(index)}
+              />
+            ))}
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
 }
 
-function ProductTab({
-  product,
-  active,
-  onSelect,
-  onKeyDown,
-}: {
-  product: Product;
-  active: boolean;
-  onSelect: () => void;
-  onKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
-}) {
-  const Icon = product.icon;
-  const hasWhiteLogo = product.id === "FixWork";
-
-  return (
-    <button
-      type="button"
-      role="tab"
-      id={`solution-tab-${product.id}`}
-      aria-selected={active}
-      aria-controls="solution-panel"
-      tabIndex={active ? 0 : -1}
-      onClick={onSelect}
-      onKeyDown={onKeyDown}
-      className={`group flex min-h-[68px] min-w-0 flex-col items-center justify-center gap-1 rounded-[14px] px-1.5 py-2 text-[11px] font-semibold transition-[background-color,color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 sm:min-h-14 sm:flex-row sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-[13px] ${active ? "bg-white text-[#0a1c37] shadow-[0_3px_12px_rgba(16,53,95,.09)]" : "text-slate-500 hover:bg-white/70 hover:text-[#0a1c37]"}`}
-    >
-      <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg transition-colors sm:h-7 sm:w-7 ${hasWhiteLogo ? "bg-blue-600" : active ? "bg-blue-50" : "bg-white/70 group-hover:bg-blue-50"}`}>
-        {product.logo ? (
-          <Image
-            src={product.logo}
-            alt=""
-            aria-hidden="true"
-            width={22}
-            height={22}
-            className="h-[19px] w-[19px] object-contain sm:h-[21px] sm:w-[21px]"
-          />
-        ) : (
-          <Icon size={15} strokeWidth={2.1} aria-hidden="true" className="text-blue-600" />
-        )}
-      </span>
-      <span className="max-w-full truncate">{product.id}</span>
-    </button>
-  );
-}
-
-function ProductDetail({
+function ProductAccordionCard({
   product,
   category,
   language,
-  content,
-  contactLink,
+  active,
+  reducedMotion,
+  onSelect,
 }: {
   product: Product;
   category: string;
   language: Lang;
-  content: Copy;
-  contactLink?: string;
+  active: boolean;
+  reducedMotion: boolean;
+  onSelect: () => void;
 }) {
+  const [expanded, setExpanded] = useState(active);
+  const expandedRef = useRef(active);
+  const [logoVisible, setLogoVisible] = useState(active);
+  const [copyVisible, setCopyVisible] = useState(active);
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    if (active) {
+      const alreadyExpanded = expandedRef.current;
+      expandedRef.current = true;
+      setExpanded(true);
+      if (reducedMotion) {
+        setLogoVisible(true);
+        setCopyVisible(true);
+      } else {
+        setLogoVisible(false);
+        setCopyVisible(false);
+        timers.push(setTimeout(() => {
+          setLogoVisible(true);
+          timers.push(setTimeout(() => setCopyVisible(true), 80));
+        }, alreadyExpanded ? 80 : 180));
+      }
+    } else {
+      setLogoVisible(false);
+      setCopyVisible(false);
+      if (reducedMotion) {
+        expandedRef.current = false;
+        setExpanded(false);
+      } else {
+        timers.push(setTimeout(() => {
+          expandedRef.current = false;
+          setExpanded(false);
+        }, 80));
+      }
+    }
+
+    return () => timers.forEach(clearTimeout);
+  }, [active, reducedMotion]);
+
   return (
-    <div className="flex min-w-0 flex-col px-5 py-6 sm:px-7 sm:py-8 lg:px-10 lg:py-9">
-      <div>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-semibold">
-          <span className="text-blue-600">{product.id}</span>
-          <span aria-hidden="true" className="text-blue-300">/</span>
-          <span className="text-slate-500">{category}</span>
-        </div>
-        <h3 className="mt-4 max-w-[560px] text-[28px] font-semibold leading-[1.12] tracking-[-.04em] text-[#0a1c37] sm:text-[34px] lg:text-[38px]">
-          {product.title[language]}
-        </h3>
-        <p className="mt-4 max-w-[560px] text-[14px] leading-6 text-slate-600 sm:text-[15px] sm:leading-7">
+    <motion.button
+      type="button"
+      aria-pressed={active}
+      aria-label={`${product.id}: ${category}`}
+      onClick={onSelect}
+      className={`relative flex h-full min-h-0 min-w-11 shrink-0 overflow-hidden rounded-[18px] border text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-400 sm:min-w-[52px] lg:min-w-[58px] ${reducedMotion ? "" : "transition-[flex-basis,flex-grow,background-color,border-color] duration-700 ease-[cubic-bezier(.22,1,.36,1)]"} ${expanded ? "basis-0 grow border-blue-400/35 bg-[#0b1a30]" : "basis-11 grow-0 border-white/10 bg-[#191b1f] hover:border-white/25 hover:bg-[#202329] sm:basis-[52px] lg:basis-[72px]"}`}
+      style={{ flexGrow: expanded ? 1 : 0, flexShrink: expanded ? 1 : 0 }}
+    >
+      <motion.div
+        aria-hidden="true"
+        className={`absolute inset-0 ${reducedMotion ? "" : "transition-[filter,opacity,transform] duration-700 ease-[cubic-bezier(.22,1,.36,1)]"} ${expanded ? "scale-100 opacity-100 grayscale-0" : "scale-110 opacity-55 grayscale brightness-[.8]"}`}
+      >
+        <ProductVisual product={product} />
+      </motion.div>
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/35" animate={{ opacity: expanded ? 0 : 1 }} transition={{ duration: reducedMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }} />
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" animate={{ opacity: expanded ? 1 : 0 }} transition={{ duration: reducedMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }} />
+      <motion.div
+        aria-hidden="true"
+        className={`absolute top-4 z-20 flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-black/20 p-1 shadow-lg backdrop-blur-sm ${reducedMotion ? "" : "transition-[left,margin-left] duration-700 ease-[cubic-bezier(.22,1,.36,1)]"} ${expanded ? "left-4 ml-0 sm:left-6 lg:left-8" : "left-1/2 -ml-5"}`}
+        initial={reducedMotion || active ? false : { opacity: 0, y: -20 }}
+        animate={logoVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+        transition={{ duration: reducedMotion ? 0 : logoVisible ? 0.42 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <ProductMark product={product} />
+      </motion.div>
+      <motion.div
+        aria-hidden={!copyVisible}
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-4 sm:p-6 lg:p-8 xl:p-10"
+        initial={reducedMotion || active ? false : { opacity: 0, y: 18 }}
+        animate={copyVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+        transition={{ duration: reducedMotion ? 0 : copyVisible ? 0.42 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <p className="max-w-[520px] text-[9px] font-bold tracking-[.16em] text-blue-200/80 sm:text-[10px]">{category}</p>
+        <h3 className="mt-2 text-[clamp(1.8rem,4vw,3.3rem)] font-semibold leading-[1.02] tracking-[-.05em] text-white">{product.id}</h3>
+        <p className="mt-2 max-w-[520px] text-[12px] leading-5 text-white/80 sm:mt-3 sm:text-[14px] sm:leading-6">
           {product.desc[language]}
         </p>
-      </div>
-
-      <ul className="mt-6 grid gap-x-5 gap-y-3 sm:grid-cols-2 md:mt-7">
-        {product.points[language].map((point) => (
-          <li key={point} className="flex items-start gap-2.5 text-[13px] leading-5 text-slate-700">
-            <span className="mt-0.5 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-blue-50 text-blue-600">
-              <Check size={11} strokeWidth={2.5} aria-hidden="true" />
-            </span>
-            <span>{point}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-5 sm:mt-auto sm:pt-6">
-        <div className="min-w-0">
-          <p className="text-[10px] font-bold tracking-[.15em] text-slate-400">{content.industriesLabel}</p>
-          <p className="mt-1.5 text-[12px] leading-5 text-slate-600">{product.industry[language]}</p>
-        </div>
-        <ButtonLink href={contactLink || "#industries"} variant="primary" className="group min-h-11 shrink-0 px-4 text-[12px]">
-          {contactLink ? content.talk : content.industriesExplore}
-          <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </ButtonLink>
-      </div>
-    </div>
+      </motion.div>
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
+        animate={{ opacity: expanded ? 0 : 1 }}
+        transition={{ duration: reducedMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <span className="rotate-180 whitespace-nowrap text-[11px] font-semibold tracking-[.08em] text-white/80 drop-shadow-[0_1px_4px_rgba(0,0,0,.8)] [writing-mode:vertical-rl] sm:text-xs">
+          {product.id}
+        </span>
+      </motion.span>
+    </motion.button>
   );
 }
 
-function ProductVisual({ product, index, reducedMotion }: { product: Product; index: number; reducedMotion: boolean }) {
+const productVisuals: Record<Product["id"], string> = {
+  FixTrack: "/fixtrack-fleet.webp",
+  FixWork: "/fixwork-workforce.webp",
+  FixSight: "/fixsight-cctv.webp",
+};
+
+function ProductVisual({ product }: { product: Product }) {
   return (
-    <div className="relative min-h-[250px] overflow-hidden bg-[#071a35] text-white sm:min-h-[290px] md:m-2 md:rounded-[18px] lg:min-h-[340px]">
-      {product.id !== "FixTrack" && (
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-16 -top-28 h-72 w-72 rounded-full border border-white/[.07]" />
-          <div className="absolute -right-2 -top-14 h-48 w-48 rounded-full border border-white/[.06]" />
-          <div className="absolute -bottom-28 -left-20 h-64 w-64 rounded-full border border-blue-300/[.09]" />
-          <div className="absolute inset-0 opacity-[.16]" style={{ backgroundImage: "radial-gradient(#72a8e8 1px, transparent 1px)", backgroundSize: "20px 20px", maskImage: "linear-gradient(to top right, black, transparent 70%)" }} />
-        </div>
-      )}
-
-      <div className="relative z-10 flex min-h-[250px] flex-col justify-between p-5 sm:min-h-[290px] sm:p-7 md:min-h-[414px] lg:p-8">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold tracking-[.15em] text-blue-200/80">{product.id}</span>
-          <span className="rounded-full border border-white/10 bg-white/[.05] px-2.5 py-1 text-[10px] font-semibold tracking-[.12em] text-white/70">{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
-        </div>
-        <div className="relative flex flex-1 items-center justify-center py-4 sm:py-5">
-          <ProductMotion product={product} reducedMotion={reducedMotion} />
-        </div>
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[10px] font-bold tracking-[.14em] text-white/55">{product.id.toUpperCase()}</p>
-            <div aria-hidden="true" className="mt-2 h-[2px] w-10 rounded-full bg-blue-400" />
-          </div>
-          <span className="text-[11px] text-white/60">{product.id}</span>
-        </div>
-      </div>
-    </div>
+    <Image
+      src={productVisuals[product.id]}
+      alt=""
+      fill
+      sizes="(min-width: 1024px) 65vw, 100vw"
+      className="object-cover object-center"
+      priority={product.id === "FixTrack"}
+    />
   );
 }
 
-function ProductMotion({ product, reducedMotion }: { product: Product; reducedMotion: boolean }) {
-  if (product.id === "FixTrack") return <FixTrackMotion reducedMotion={reducedMotion} />;
-  if (product.id === "FixWork") return <FixWorkMotion reducedMotion={reducedMotion} />;
-  return <FixSightMotion reducedMotion={reducedMotion} />;
+function ProductMark({ product }: { product: Product }) {
+  if (product.id === "FixTrack") {
+    return <Image src="/fixtrack-icon-blue.svg" alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />;
+  }
+  if (product.id === "FixWork") {
+    return <Image src="/fixwork-blue.svg" alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />;
+  }
+  // Temporary product-mark placeholder until the official FixSight logo is available.
+  return <Camera aria-hidden="true" className="h-5 w-5 text-blue-600" strokeWidth={1.8} />;
 }
-
-function FixTrackMotion({ reducedMotion }: { reducedMotion: boolean }) {
-  const route = "M100 200 H130 Q150 200 150 180 V176 Q150 156 170 156 H230 H294 Q314 156 314 136 V110 Q314 90 334 90 H390 V72 H420 V236 Q420 256 400 256 H94 Q70 256 70 232 V220 Q70 200 90 200 H100";
-  const roadNetwork = [
-    route,
-    "M24 90 H130 Q150 90 150 110 V136 Q150 156 170 156",
-    "M230 156 V126 Q230 106 250 106 H314 Q334 106 334 90",
-    "M314 136 H360 Q380 136 380 156 V236",
-    "M94 256 V220 Q94 200 114 200 H130",
-  ];
-  const destinations = [
-    { x: 70, y: 220, label: "Destination 1", labelX: 92, labelY: 224, anchor: "start" as const },
-    { x: 230, y: 156, label: "Destination 2", labelX: 230, labelY: 132, anchor: "middle" as const },
-    { x: 390, y: 72, label: "Destination 3", labelX: 390, labelY: 48, anchor: "middle" as const },
-  ];
-
-  return (
-    <svg aria-hidden="true" focusable="false" viewBox="0 0 460 290" className="h-full max-h-[300px] w-full max-w-[470px]">
-      <g fill="none" stroke="#102c51" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
-        {roadNetwork.map((road, index) => <path key={`road-base-${index}`} d={road} />)}
-      </g>
-      <g fill="none" stroke="#1b4679" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" opacity=".95">
-        {roadNetwork.map((road, index) => <path key={`road-center-${index}`} d={road} />)}
-      </g>
-      <path d={route} fill="none" stroke="#2563eb" strokeOpacity=".2" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-      <motion.path
-        d={route}
-        fill="none"
-        stroke="#60a5fa"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeDasharray="7 11"
-        animate={reducedMotion ? { strokeDashoffset: 0, opacity: 0.95 } : { strokeDashoffset: [0, -72], opacity: [0.75, 1] }}
-        transition={{ duration: reducedMotion ? 0 : 3.2, repeat: reducedMotion ? 0 : Infinity, ease: "linear" }}
-      />
-
-      <g transform={reducedMotion ? "translate(100 200)" : undefined}>
-        {!reducedMotion && <animateMotion dur="13s" repeatCount="indefinite" rotate="auto" path={route} />}
-        <circle r="21" fill="none" stroke="#60a5fa" strokeWidth="1.4" opacity={reducedMotion ? ".24" : ".5"}>
-          {!reducedMotion && (
-            <>
-              <animate attributeName="r" values="16;25;16" dur="2.5s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.5;0.08;0.5" dur="2.5s" repeatCount="indefinite" />
-            </>
-          )}
-        </circle>
-        <circle r="14" fill="#2563eb" stroke="#bfdbfe" strokeWidth="1.8" />
-        <path d="M-7 5-6-3Q-6-7-3-8L-2-11H2L3-8Q6-7 6-3L7 5Z" fill="#eff6ff" />
-        <path d="M-4-4Q-4-6-2-7H2Q4-6 4-4L5-2H-5Z" fill="#60a5fa" />
-        <path d="M-7 1H7" stroke="#1d4ed8" strokeWidth="1.3" />
-      </g>
-
-      {destinations.map((destination) => (
-        <g key={destination.label}>
-          <circle cx={destination.x} cy={destination.y} r="20" fill="#071a35" stroke="#3b82f6" strokeOpacity=".45" strokeWidth="1.4" />
-          <circle cx={destination.x} cy={destination.y} r="15" fill="#1d4ed8" stroke="#93c5fd" strokeWidth="1.5" />
-          <image
-            href="/fixtrack-icon-white.svg"
-            x={destination.x - 10}
-            y={destination.y - 10}
-            width="20"
-            height="20"
-            preserveAspectRatio="xMidYMid meet"
-          />
-          <text
-            x={destination.labelX}
-            y={destination.labelY}
-            textAnchor={destination.anchor}
-            fill="#93c5fd"
-            fontFamily="Arial, sans-serif"
-            fontSize="10"
-            fontWeight="600"
-            letterSpacing=".4"
-          >
-            {destination.label}
-          </text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function FixWorkMotion({ reducedMotion }: { reducedMotion: boolean }) {
-  const nodes = [{ cx: 78, cy: 78, delay: 0.2 }, { cx: 282, cy: 78, delay: 0.8 }, { cx: 86, cy: 206, delay: 0.5 }, { cx: 274, cy: 206, delay: 1.1 }];
-  const connections = "M180 132 78 78M180 132 282 78M180 132 86 206M180 132 274 206";
-  return (
-    <svg aria-hidden="true" focusable="false" viewBox="0 0 360 260" className="h-full max-h-[260px] w-full max-w-[360px] overflow-visible">
-      <path d={connections} fill="none" stroke="#49627f" strokeWidth="1.5" />
-      <motion.path d={connections} fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 8" animate={reducedMotion ? { opacity: 0.65 } : { opacity: [0.25, 0.8, 0.25] }} transition={{ duration: reducedMotion ? 0 : 3.2, repeat: reducedMotion ? 0 : Infinity, ease: "easeInOut" }} />
-      {nodes.map((node) => (
-        <motion.g key={`${node.cx}-${node.cy}`} animate={reducedMotion ? { y: 0 } : { y: [0, -3, 0] }} transition={{ duration: reducedMotion ? 0 : 2.8, delay: reducedMotion ? 0 : node.delay, repeat: reducedMotion ? 0 : Infinity, ease: "easeInOut" }}>
-          <circle cx={node.cx} cy={node.cy} r="17" fill="#102d50" stroke="#55708f" strokeWidth="1.5" />
-          <circle cx={node.cx} cy={node.cy} r="5" fill="#93c5fd" />
-        </motion.g>
-      ))}
-      <motion.circle cx="180" cy="132" r="39" fill="none" stroke="#60a5fa" strokeWidth="1.5" animate={reducedMotion ? { r: 48, opacity: 0.12 } : { r: [38, 54], opacity: [0.3, 0] }} transition={{ duration: reducedMotion ? 0 : 2.8, repeat: reducedMotion ? 0 : Infinity, ease: "easeOut" }} />
-      <circle cx="180" cy="132" r="31" fill="#15385f" stroke="#6ba9ef" strokeOpacity=".7" strokeWidth="1.5" />
-      <image href="/fixwork-white.svg" x="158" y="110" width="44" height="44" preserveAspectRatio="xMidYMid meet" />
-    </svg>
-  );
-}
-
-function FixSightMotion({ reducedMotion }: { reducedMotion: boolean }) {
-  return (
-    <svg aria-hidden="true" focusable="false" viewBox="0 0 360 260" className="h-full max-h-[260px] w-full max-w-[360px] overflow-visible">
-      <rect x="85" y="66" width="190" height="142" rx="18" fill="#0b2140" stroke="#49627f" strokeWidth="1.5" />
-      <path d="M143 66 154 51H207L218 66" fill="#102d50" stroke="#49627f" strokeWidth="1.5" strokeLinejoin="round" />
-      <circle cx="180" cy="137" r="32" fill="#102d50" stroke="#5f83aa" strokeWidth="2" />
-      <circle cx="180" cy="137" r="16" fill="#173d68" stroke="#93c5fd" strokeOpacity=".8" strokeWidth="1.5" />
-      <path d="M111 93h26M111 93v21M249 93h-26M249 93v21M111 181h26M111 181v-21M249 181h-26M249 181v-21" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" />
-      <motion.rect x="121" y="101" width="45" height="36" rx="5" fill="none" stroke="#60a5fa" strokeWidth="1.5" animate={reducedMotion ? { opacity: 0.65 } : { opacity: [0.3, 0.85, 0.3] }} transition={{ duration: reducedMotion ? 0 : 2.4, repeat: reducedMotion ? 0 : Infinity, ease: "easeInOut" }} />
-      <motion.line x1="98" x2="262" y1={reducedMotion ? 137 : 90} y2={reducedMotion ? 137 : 90} stroke="#60a5fa" strokeOpacity=".75" strokeWidth="1.5" animate={reducedMotion ? { y1: 137, y2: 137, opacity: 0.35 } : { y1: [90, 188, 90], y2: [90, 188, 90], opacity: [0.2, 0.75, 0.2] }} transition={{ duration: reducedMotion ? 0 : 3.6, repeat: reducedMotion ? 0 : Infinity, ease: "easeInOut" }} />
-    </svg>
-  );
-}
-
-

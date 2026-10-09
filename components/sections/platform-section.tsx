@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Activity, ArrowDownRight, Route, Users, Warehouse } from "lucide-react";
+import { ArrowDownRight } from "lucide-react";
 import type { Copy, Lang } from "@/components/content";
 import { ProductOrbit } from "@/components/sections/product-orbit";
 import { cancelInPageScrollAnimation, scrollWindowToY } from "@/components/ui/in-page-scroll";
@@ -239,14 +239,14 @@ export function PlatformSection({ content, language }: { content: Copy; language
 
   return (
     <section ref={sectionRef} id="platform" className="scroll-story relative overflow-clip bg-black text-white lg:min-h-[260vh]">
-      <div className="scroll-story__sticky container-wide relative grid items-center gap-12 py-24 sm:py-32 lg:sticky lg:top-0 lg:min-h-screen lg:grid-cols-[.88fr_1.12fr] lg:gap-20 lg:py-12">
+      <div className="scroll-story__sticky container-wide relative grid items-center gap-12 py-24 sm:py-32 lg:sticky lg:top-0 lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14 lg:py-12">
         <div>
           <Reveal>
             <p className="mb-5 flex items-center gap-3 text-[10px] font-bold tracking-[.17em] text-[var(--blue)]">
               <span className="h-px w-7 bg-[var(--blue)]" />{content.ecosystemEyebrow}
             </p>
-            <h2 className="max-w-[560px] text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-[1.08] tracking-[-.045em] [text-wrap:balance]">{content.ecosystemTitle}</h2>
-            <p className="mt-6 max-w-[510px] text-[14px] leading-7 text-white/70">{content.ecosystemText}</p>
+            <h2 className="max-w-[600px] text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-[1.08] tracking-[-.045em] [text-wrap:balance]">{content.ecosystemTitle}</h2>
+            <p className="mt-6 max-w-[540px] text-[15px] leading-7 text-white/70">{content.ecosystemText}</p>
           </Reveal>
           <div className="mt-8 min-h-[170px] sm:min-h-[150px]">
             <AnimatePresence mode="wait" initial={false}>
@@ -259,7 +259,7 @@ export function PlatformSection({ content, language }: { content: Copy; language
               >
                 <p className="text-[10px] font-bold tracking-[.16em] text-[var(--blue)]">{steps[activeStep].label}</p>
                 <h3 className="mt-2 text-xl font-semibold tracking-[-.025em] text-white sm:text-2xl">{steps[activeStep].title}</h3>
-                <p className="mt-2 max-w-[470px] text-[13px] leading-6 text-white/70">{steps[activeStep].body}</p>
+                <p className="mt-2 max-w-[540px] text-[13px] leading-6 text-white/70">{steps[activeStep].body}</p>
               </motion.div>
             </AnimatePresence>
           </div>

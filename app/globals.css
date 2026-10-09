@@ -151,6 +151,26 @@ main[id] { scroll-margin-top: 80px; }
   box-shadow: none;
 }
 
+.circuit-stage::before,
+.circuit-stage::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.circuit-stage::before {
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(17, 83, 176, .2), transparent 64%);
+}
+
+.circuit-stage::after {
+  z-index: 0;
+  background-image: linear-gradient(rgba(92, 151, 228, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(92, 151, 228, .07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at center, #000 8%, transparent 80%);
+}
+
 .circuit-branch .circuit-trace {
   fill: none;
   stroke: color-mix(in srgb, var(--blue) 22%, transparent);
@@ -169,18 +189,18 @@ main[id] { scroll-margin-top: 80px; }
 .circuit-trace-pulse {
   fill: none;
   stroke: color-mix(in srgb, var(--blue) 72%, white);
-  stroke-width: 2.5;
+  stroke-width: 2.2;
   stroke-linecap: round;
-  stroke-dasharray: 3 97;
+  stroke-dasharray: 12 88;
   stroke-dashoffset: 100;
-  opacity: .2;
-  animation: circuit-data-flow 4.2s linear infinite;
+  opacity: .48;
+  animation: circuit-data-flow 5.6s linear infinite;
 }
 
 .circuit-branch[data-active="true"] .circuit-trace-pulse {
-  opacity: .88;
-  animation-duration: 2.8s;
-  filter: drop-shadow(0 0 5px var(--blue));
+  opacity: .92;
+  animation-duration: 4s;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--blue) 72%, transparent));
 }
 
 .circuit-junction {
@@ -202,17 +222,15 @@ main[id] { scroll-margin-top: 80px; }
 
 .circuit-art {
   z-index: 1;
-  transform: scale(1.12);
-  transform-origin: center;
 }
 
 .circuit-node {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--blue) 38%, transparent);
-  border-radius: 12px;
+  border-radius: 14px;
   background: rgba(5, 13, 25, .96);
   color: color-mix(in srgb, var(--blue) 58%, white);
   transition: transform .28s ease, border-color .28s ease, background-color .28s ease, box-shadow .28s ease, color .28s ease;
@@ -237,6 +255,37 @@ main[id] { scroll-margin-top: 80px; }
 .circuit-node:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--blue) 55%, white);
   outline-offset: 4px;
+}
+
+.circuit-node__label {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  color: color-mix(in srgb, var(--blue) 38%, #dceaff);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .015em;
+  line-height: 1;
+  text-shadow: 0 1px 10px rgba(7, 20, 43, .9);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 639px) {
+  .circuit-node__label { font-size: 11px; }
+}
+
+.circuit-node__logo {
+  display: block;
+  height: 32px;
+  width: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(37, 99, 235, .35));
+}
+
+.circuit-node__logo--FixTrack {
+  height: 36px;
+  width: 36px;
 }
 
 .circuit-node__icon {
@@ -265,10 +314,6 @@ main[id] { scroll-margin-top: 80px; }
   transform: translate(-50%, -50%);
 }
 
-@media (min-width: 640px) {
-  .circuit-node { width: 46px; height: 46px; }
-}
-
 @keyframes circuit-data-flow {
   from { stroke-dashoffset: 100; }
   to { stroke-dashoffset: 0; }
@@ -281,7 +326,30 @@ main[id] { scroll-margin-top: 80px; }
 
 .orb { box-shadow: 0 0 70px rgba(11, 117, 255, .28); }
 
+@media (min-width: 1024px) and (min-height: 760px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .blog-section-scroll { min-height: calc(100svh + 500px); }
+  .blog-section-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    padding-block: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 760px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .about-reveal-section { min-height: 200svh; }
+  .about-reveal-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    padding-block: 2.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .about-reveal-word { opacity: 1 !important; }
   .scroll-story { min-height: auto !important; }
   .scroll-story__sticky { position: static !important; min-height: 0 !important; padding-block: 3rem !important; }
   .circuit-trace-pulse { display: none !important; }

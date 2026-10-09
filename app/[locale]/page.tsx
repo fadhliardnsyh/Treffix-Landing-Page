@@ -9,8 +9,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   return locale === "en"
-    ? { title: "Treffix | Connected Operations", description: "Connect fleet, workforce, warehouse, and operational data with Treffix IoT, data, and AI solutions." }
-    : { title: "Treffix | Operasional Terhubung", description: "Hubungkan armada, tenaga kerja, gudang, dan data operasional dengan solusi IoT, data, dan AI dari Treffix." };
+    ? { title: "Treffix | Fleet Tracking, HRMS & AI CCTV", description: "Explore FixTrack fleet and vehicle tracking, FixWork HRMS and workforce management, and FixSight AI CCTV for camera monitoring and PPE detection." }
+    : { title: "Treffix | Pelacakan Armada, HRMS & CCTV AI", description: "Kenali FixTrack untuk pelacakan armada dan kendaraan, FixWork untuk HRMS dan manajemen tenaga kerja, serta FixSight AI CCTV untuk pemantauan kamera dan deteksi APD." };
 }
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {

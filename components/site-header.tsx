@@ -5,11 +5,12 @@ import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-m
 import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { products, type Copy, type Lang } from "@/components/content";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { ButtonLink } from "@/components/ui/button-link";
 
-const navIds = ["platform", "solutions", "industries", "about"];
+const navIds = ["solutions", "industries", "about", "blog"];
 
 export function SiteHeader({
   language,
@@ -25,7 +26,12 @@ export function SiteHeader({
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
-  const contactHref = contactLink || "#solutions";
+  const pathname = usePathname() || "";
+  const activeNav = pathname.split("/").includes("blog") ? "blog" : undefined;
+  const localizedPath = pathname.replace(/^\/(id|en)(?=\/|$)/, "");
+  const isHomePage = pathname === `/${language}` || pathname === `/${language}/` || pathname === "/";
+  const sectionHref = (id: string) => isHomePage ? `#${id}` : `/${language}#${id}`;
+  const contactHref = contactLink || sectionHref("solutions");
   const headerRef = useRef<HTMLElement>(null);
   const solutionsTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
@@ -106,13 +112,13 @@ export function SiteHeader({
         animate={{ height: isScrolled ? 56 : 68, paddingTop: isScrolled ? 8 : 4 }}
         transition={{ duration: reduceMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
       >
-        <BrandLogo homeLabel={content.homeLabel} priority />
+        <BrandLogo homeLabel={content.homeLabel} homeHref={`/${language}`} priority imageClassName="h-8 lg:h-10" />
 
         <nav
           aria-label={content.primaryNav}
-          className="hidden items-center gap-1 rounded-full border border-white/12 bg-black/20 p-1 md:flex"
+          className="hidden items-center gap-1 rounded-full border border-white/12 bg-black/20 p-1 lg:absolute lg:left-1/2 lg:flex lg:-translate-x-1/2"
         >
-          {content.nav.map((item, index) => index === 1 ? (
+          {content.nav.map((item, index) => index === 0 ? (
             <div
               key={item}
               className="relative"
@@ -157,7 +163,7 @@ export function SiteHeader({
                         {solutionLabels.map(({ name, description, icon: Icon, logo }) => (
                           <a
                             key={name}
-                            href="#solutions"
+                            href={sectionHref("solutions")}
                             onClick={() => setSolutionsOpen(false)}
                             className="group flex min-h-[88px] w-full items-start gap-3 rounded-xl border border-transparent p-3 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
                           >
@@ -178,7 +184,7 @@ export function SiteHeader({
                       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-1 pt-3">
                         <p className="text-[11px] text-white/50">{solutionsMenuText.footer}</p>
                         <a
-                          href="#solutions"
+                          href={sectionHref("solutions")}
                           onClick={() => setSolutionsOpen(false)}
                           className="group inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-[11px] font-semibold text-blue-200 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
                         >
@@ -191,27 +197,35 @@ export function SiteHeader({
                 )}
               </AnimatePresence>
             </div>
+          ) : index === content.nav.length - 1 ? (
+            <Link
+              key={item}
+              aria-current={activeNav === "blog" ? "page" : undefined}
+              className={activeNav === "blog" ? "flex min-h-9 items-center rounded-full bg-[#0b75ff]/15 px-3 text-[13px] font-semibold text-[#0b75ff] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]" : "flex min-h-9 items-center rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"}
+              href={`/${language}/blog`}
+            >
+              {item}
+            </Link>
           ) : (
             <a
               key={item}
               className="flex min-h-9 items-center rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
-              href={`#${navIds[index]}`}
+              href={sectionHref(navIds[index])}
             >
               {item}
             </a>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <LanguageSwitch language={language} label={content.switchLanguage} />
+        <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitch language={language} label={content.switchLanguage} destination={localizedPath} />
           <ButtonLink href={contactHref} variant="light" className="group min-h-11 px-5 text-[12px]">
             {contactLink ? content.talk : content.explore}
             <ArrowUpRight size={14} className="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </ButtonLink>
         </div>
 
-        <div className="flex items-center gap-1 md:hidden">
-          <LanguageSwitch language={language} label={content.switchLanguage} compact />
+        <div className="flex items-center gap-1 lg:hidden">
           <button
             ref={mobileMenuTriggerRef}
             type="button"
@@ -233,10 +247,14 @@ export function SiteHeader({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.2 }}
-            className="absolute left-4 right-4 top-full z-10 mx-auto max-w-[26rem] overflow-hidden rounded-2xl border border-white/12 bg-black/75 shadow-[0_24px_70px_rgba(0,0,0,.42)] backdrop-blur-sm md:hidden"
+            className="absolute left-4 right-4 top-full z-10 mx-auto max-w-[26rem] overflow-hidden rounded-2xl border border-white/12 bg-black/75 shadow-[0_24px_70px_rgba(0,0,0,.42)] backdrop-blur-sm lg:hidden"
           >
             <div className="flex flex-col p-3">
-              {content.nav.map((item, index) => index === 1 ? (
+              <div className="flex items-center justify-between border-b border-white/[.06] px-2 pb-3">
+                <span className="text-xs text-white/60">{content.switchLanguage}</span>
+                <LanguageSwitch language={language} label={content.switchLanguage} compact destination={localizedPath} />
+              </div>
+              {content.nav.map((item, index) => index === 0 ? (
                 <div key={item} className="border-b border-white/[.06]">
                   <button
                     type="button"
@@ -260,7 +278,7 @@ export function SiteHeader({
                         {solutionLabels.map(({ name, description, icon: Icon, logo }) => (
                           <a
                             key={name}
-                            href="#solutions"
+                            href={sectionHref("solutions")}
                             onClick={() => { setMenuOpen(false); setMobileSolutionsOpen(false); }}
                             className="group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
                           >
@@ -282,11 +300,21 @@ export function SiteHeader({
                     )}
                   </AnimatePresence>
                 </div>
+              ) : index === content.nav.length - 1 ? (
+                <Link
+                  key={item}
+                  aria-current={activeNav === "blog" ? "page" : undefined}
+                  className={activeNav === "blog" ? "flex min-h-10 items-center rounded-lg border-b border-white/[.06] bg-[#0b75ff]/15 px-2 text-sm font-semibold text-[#0b75ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]" : "flex min-h-10 items-center rounded-lg border-b border-white/[.06] px-2 text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"}
+                  href={`/${language}/blog`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item}
+                </Link>
               ) : (
                 <a
                   key={item}
                   className="flex min-h-10 items-center rounded-lg border-b border-white/[.06] px-2 text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
-                  href={`#${navIds[index]}`}
+                  href={sectionHref(navIds[index])}
                   onClick={() => setMenuOpen(false)}
                 >
                   {item}
@@ -311,10 +339,12 @@ function LanguageSwitch({
   language,
   label,
   compact = false,
+  destination = "",
 }: {
   language: Lang;
   label: string;
   compact?: boolean;
+  destination?: string;
 }) {
   return (
     <LayoutGroup id={compact ? "language-switch-mobile" : "language-switch-desktop"}>
@@ -330,7 +360,7 @@ function LanguageSwitch({
           return (
             <Link
               key={locale}
-              href={`/${locale}`}
+              href={`/${locale}${destination}`}
               lang={locale}
               aria-label={name}
               aria-current={active ? "page" : undefined}

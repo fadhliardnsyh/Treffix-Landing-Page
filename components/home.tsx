@@ -1,16 +1,12 @@
 import { copy, type Lang } from "@/components/content";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { AboutSection } from "@/components/sections/about-section";
 import { ContactSection } from "@/components/sections/contact-section";
 import { FaqSection } from "@/components/sections/faq-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { IndustriesSection } from "@/components/sections/industries-section";
-import { PlatformSection } from "@/components/sections/platform-section";
-import { ProofSection } from "@/components/sections/proof-section";
 import { SolutionsSection } from "@/components/sections/solutions-section";
-import { StoriesSection } from "@/components/sections/stories-section";
-import { WhySection } from "@/components/sections/why-section";
+import { BlogSection } from "@/components/sections/blog-section";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { InPageScroll } from "@/components/ui/in-page-scroll";
 
@@ -28,15 +24,11 @@ export default function Home({ language }: { language: Lang }) {
         >
           {content.skipToContent}
         </a>
-        <SiteHeader language={language} content={content} contactLink={contactLink} />
         <HeroSection content={content} language={language} />
-        <AboutSection content={content} />
-        <SolutionsSection content={content} language={language} contactLink={contactLink} />
-        <PlatformSection content={content} language={language} />
+        <AboutSection content={content} language={language} />
+        <SolutionsSection content={content} language={language} />
         <IndustriesSection content={content} contactLink={contactLink} />
-        <ProofSection content={content} />
-        <StoriesSection content={content} />
-        <WhySection content={content} />
+        <BlogSection content={content} language={language} />
         <FaqSection content={content} contactLink={contactLink} />
         <ContactSection content={content} contactLink={contactLink} isIndonesian={language === "id"} />
         <SiteFooter content={content} language={language} contactLink={contactLink} />

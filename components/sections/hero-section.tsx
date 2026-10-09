@@ -22,9 +22,7 @@ export function HeroSection({ content, language }: { content: Copy; language: La
             <h1 className="mx-auto max-w-[850px] text-[clamp(2.7rem,6.5vw,5rem)] font-semibold leading-[1.02] tracking-[-.055em] [text-wrap:balance]">
               {content.heroA}
               <br />
-              <span className="text-white">{content.heroB}</span>
-              <br />
-              {content.heroC}
+              <span className="text-[var(--blue)]">{content.heroB}</span>
             </h1>
           </Reveal>
           <Reveal delay={0.16}>

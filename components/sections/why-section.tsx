@@ -1,9 +1,9 @@
-import { Boxes, Clock3, Route, ShieldCheck, Zap } from "lucide-react";
+import { Camera, Route, Users } from "lucide-react";
 import type { Copy } from "@/components/content";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 
-const reasons = [Route, Boxes, Clock3, Zap, ShieldCheck];
+const reasons = [Route, Users, Camera];
 
 export function WhySection({ content }: { content: Copy }) {
   return (
@@ -17,7 +17,7 @@ export function WhySection({ content }: { content: Copy }) {
             className="max-w-[670px]"
           />
         </Reveal>
-        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {content.why.map((reason, index) => (
             <Reveal key={reason} delay={index * 0.06}>
               <WhyCard title={reason} description={content.whyDesc[index]} icon={reasons[index]} />
