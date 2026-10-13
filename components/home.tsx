@@ -1,14 +1,16 @@
 import { copy, type Lang } from "@/components/content";
-import { SiteFooter } from "@/components/site-footer";
 import { AboutSection } from "@/components/sections/about-section";
-import { ContactSection } from "@/components/sections/contact-section";
+import { ApproachSection } from "@/components/sections/approach-section";
 import { FaqSection } from "@/components/sections/faq-section";
 import { HeroSection } from "@/components/sections/hero-section";
-import { IndustriesSection } from "@/components/sections/industries-section";
 import { SolutionsSection } from "@/components/sections/solutions-section";
+import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { BlogSection } from "@/components/sections/blog-section";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { InPageScroll } from "@/components/ui/in-page-scroll";
+
+// Turn on when approved testimonial content is ready to publish.
+const HOMEPAGE_TESTIMONIALS_ENABLED = false;
 
 export default function Home({ language }: { language: Lang }) {
   const content = copy[language];
@@ -26,12 +28,11 @@ export default function Home({ language }: { language: Lang }) {
         </a>
         <HeroSection content={content} language={language} />
         <AboutSection content={content} language={language} />
-        <SolutionsSection content={content} language={language} />
-        <IndustriesSection content={content} contactLink={contactLink} />
+        <SolutionsSection content={content} language={language} contactLink={contactLink} />
+        <ApproachSection content={content} />
+        {HOMEPAGE_TESTIMONIALS_ENABLED && <TestimonialsSection content={content} contactLink={contactLink} />}
         <BlogSection content={content} language={language} />
-        <FaqSection content={content} contactLink={contactLink} />
-        <ContactSection content={content} contactLink={contactLink} isIndonesian={language === "id"} />
-        <SiteFooter content={content} language={language} contactLink={contactLink} />
+        <FaqSection content={content} />
       </main>
     </MotionProvider>
   );

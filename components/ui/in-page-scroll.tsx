@@ -25,27 +25,36 @@ function easeInOutCubic(progress: number) {
     : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 }
 
-export function scrollWindowToY(targetY: number) {
+function easeOutCubic(progress: number) {
+  return 1 - Math.pow(1 - progress, 3);
+}
+
+type ScrollAnimationOptions = {
+  duration?: (distance: number) => number;
+  easing?: (progress: number) => number;
+};
+
+export function scrollWindowToY(targetY: number, options: ScrollAnimationOptions = {}) {
   stopAnimation();
 
   const startY = window.scrollY;
   const maxY = document.documentElement.scrollHeight - window.innerHeight;
   const clampedTargetY = Math.max(0, Math.min(targetY, maxY));
   const distance = clampedTargetY - startY;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  if (reduceMotion || Math.abs(distance) < 2) {
+  if (Math.abs(distance) < 2) {
     window.scrollTo({ top: clampedTargetY, behavior: "instant" });
     return 0;
   }
 
-  const duration = getScrollDuration(Math.abs(distance));
+  const duration = options.duration?.(Math.abs(distance)) ?? getScrollDuration(Math.abs(distance));
+  const easing = options.easing ?? easeInOutCubic;
   const startTime = performance.now();
 
   const animate = (now: number) => {
     const progress = Math.min(1, (now - startTime) / duration);
     window.scrollTo({
-      top: startY + distance * easeInOutCubic(progress),
+      top: startY + distance * easing(progress),
       behavior: "instant",
     });
 
@@ -79,7 +88,11 @@ export function scrollToInPageTarget(target: string | HTMLElement, hash?: string
   const sectionOffset = Number.parseFloat(getComputedStyle(targetElement).scrollMarginTop) || 0;
   const topOffset = Math.max(headerHeight + 12, sectionOffset);
   const targetY = window.scrollY + targetElement.getBoundingClientRect().top - topOffset;
-  scrollWindowToY(targetY);
+  scrollWindowToY(targetY, {
+    // Keep link navigation fluid without making the page feel like it trails behind the click.
+    duration: (distance) => Math.min(900, Math.max(220, 220 + distance * 0.2)),
+    easing: easeOutCubic,
+  });
 }
 
 export function InPageScroll() {

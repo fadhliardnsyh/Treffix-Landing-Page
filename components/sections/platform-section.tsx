@@ -20,8 +20,7 @@ export function PlatformSection({ content, language }: { content: Copy; language
     if (!section) return;
 
     const desktopStory = window.matchMedia("(min-width: 1024px)");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const isStickyStory = () => desktopStory.matches && !reducedMotion.matches;
+    const isStickyStory = () => desktopStory.matches;
     const wheelThreshold = 180;
     const touchThreshold = 72;
     const sectionEntryTolerance = 120;

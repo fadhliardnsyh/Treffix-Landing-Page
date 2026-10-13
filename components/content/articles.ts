@@ -1,24 +1,42 @@
 import { Camera, Route, Users } from "lucide-react";
 import type { Lang } from "@/components/content";
+import type { LucideIcon } from "lucide-react";
 
-export type Article = (typeof articles)[number];
+export type ArticleSection = { heading: string; paragraphs: readonly string[] };
+export type Article = {
+  slug: string;
+  icon: LucideIcon;
+  category: Record<Lang, string>;
+  title: Record<Lang, string>;
+  excerpt: Record<Lang, string>;
+  description: Record<Lang, string>;
+  image: string;
+  imageAlt: Record<Lang, string>;
+  publishedAt: string | null;
+  relatedSlugs: readonly string[];
+  sections: Record<Lang, readonly ArticleSection[]>;
+};
 
 export const articles = [
   {
     slug: "pelacakan-armada-dan-perjalanan-kendaraan",
+    image: "/article-fleet-road.jpg",
+    imageAlt: { id: "Kendaraan armada melaju di jalan raya", en: "Fleet vehicles traveling on a road" },
+    publishedAt: null,
+    relatedSlugs: ["notifikasi-real-time-dan-pemutaran-ulang-armada", "cctv-ai-untuk-pemantauan-operasional", "hrms-absensi-rekrutmen-payroll", "absensi-karyawan-dan-area-absensi"],
     icon: Route,
     category: { id: "Pelacakan armada", en: "Fleet tracking" },
     title: {
-      id: "Pelacakan Armada: Memantau Lokasi dan Meninjau Perjalanan Kendaraan",
-      en: "Fleet Tracking: Monitor Vehicle Locations and Review Journeys",
+      id: "Biaya Armada Terus Naik? 5 Hal yang Perlu Dievaluasi",
+      en: "Fleet Costs Keep Rising? 5 Areas to Review",
     },
     excerpt: {
-      id: "Kenali informasi yang dapat dipantau melalui sistem pelacakan armada, mulai dari lokasi dan status kendaraan hingga riwayat perjalanan.",
-      en: "Explore the information available through fleet tracking, from vehicle locations and status to trip history.",
+      id: "Pelajari cara mengevaluasi penggunaan kendaraan, waktu berhenti, konsumsi BBM, dan pola perjalanan untuk menemukan peluang efisiensi.",
+      en: "Learn how to evaluate vehicle use, idle time, fuel consumption, and trip patterns to uncover opportunities for greater efficiency.",
     },
     description: {
-      id: "Panduan ringkas tentang pelacakan armada, pemantauan lokasi dan status kendaraan, serta tinjauan perjalanan dengan FixTrack.",
-      en: "A practical guide to fleet tracking, vehicle location and status monitoring, and trip review with FixTrack.",
+      id: "Pelajari cara mengevaluasi penggunaan kendaraan, waktu berhenti, konsumsi BBM, dan pola perjalanan untuk menemukan peluang efisiensi.",
+      en: "Learn how to evaluate vehicle use, idle time, fuel consumption, and trip patterns to uncover opportunities for greater efficiency.",
     },
     sections: {
       id: [
@@ -69,19 +87,23 @@ export const articles = [
   },
   {
     slug: "cctv-ai-untuk-pemantauan-operasional",
+    image: "/article-cctv-workplace.jpg",
+    imageAlt: { id: "CCTV memantau aktivitas di area kerja", en: "CCTV monitoring activity in a workplace" },
+    publishedAt: null,
+    relatedSlugs: ["pelacakan-armada-dan-perjalanan-kendaraan", "hrms-absensi-rekrutmen-payroll", "notifikasi-real-time-dan-pemutaran-ulang-armada", "absensi-karyawan-dan-area-absensi"],
     icon: Camera,
     category: { id: "CCTV AI", en: "AI CCTV" },
     title: {
-      id: "CCTV AI untuk Pemantauan Aktivitas dan Produktivitas Kerja",
-      en: "AI CCTV for Monitoring Workplace Activity and Productivity",
+      id: "Lebih dari Rekaman: Bagaimana AI Membantu Memantau Aktivitas di Lapangan?",
+      en: "Beyond the Footage: How Can AI Help Monitor Activity in the Field?",
     },
     excerpt: {
-      id: "Pelajari cakupan pemantauan kamera AI, termasuk aktivitas kerja, produktivitas karyawan, dan penggunaan APD.",
-      en: "Learn about AI camera monitoring for workplace activity, employee productivity, and PPE use.",
+      id: "Kenali perbedaan CCTV biasa dan analitik video berbasis AI untuk membantu mendeteksi potensi risiko serta memantau kepatuhan keselamatan.",
+      en: "Understand the difference between conventional CCTV and AI-powered video analytics for detecting potential risks and monitoring safety compliance.",
     },
     description: {
-      id: "Pelajari peran FixSight AI CCTV dalam pemantauan kamera, aktivitas kerja, produktivitas karyawan, dan penggunaan APD.",
-      en: "Learn how FixSight AI CCTV supports camera monitoring for workplace activity, employee productivity, and PPE use.",
+      id: "Kenali perbedaan CCTV biasa dan analitik video berbasis AI untuk membantu mendeteksi potensi risiko serta memantau kepatuhan keselamatan.",
+      en: "Understand the difference between conventional CCTV and AI-powered video analytics for detecting potential risks and monitoring safety compliance.",
     },
     sections: {
       id: [
@@ -132,19 +154,23 @@ export const articles = [
   },
   {
     slug: "hrms-absensi-rekrutmen-payroll",
+    image: "/article-hr-workforce.jpg",
+    imageAlt: { id: "Tim mengelola data tenaga kerja di kantor", en: "A team managing workforce information in an office" },
+    publishedAt: null,
+    relatedSlugs: ["absensi-karyawan-dan-area-absensi", "cctv-ai-untuk-pemantauan-operasional", "pelacakan-armada-dan-perjalanan-kendaraan", "notifikasi-real-time-dan-pemutaran-ulang-armada"],
     icon: Users,
     category: { id: "HRMS", en: "HRMS" },
     title: {
-      id: "HRMS untuk Mengelola Absensi, Rekrutmen, hingga Payroll",
-      en: "Using HRMS to Manage Attendance, Recruitment, and Payroll",
+      id: "Masih Mengandalkan Spreadsheet untuk Mengelola Karyawan?",
+      en: "Still Relying on Spreadsheets to Manage Employees?",
     },
     excerpt: {
-      id: "Lihat bagaimana platform HRMS dapat menyatukan kebutuhan absensi, administrasi karyawan, persetujuan, dan payroll.",
-      en: "See how an HRMS platform brings together attendance, employee administration, approvals, and payroll.",
+      id: "Pahami kapan proses HR perlu didigitalisasi dan bagaimana absensi, administrasi, serta payroll dapat dikelola dengan lebih terstruktur.",
+      en: "Learn when HR processes are ready for digitization and how attendance, administration, and payroll can be managed more systematically.",
     },
     description: {
-      id: "Panduan mengenal fitur FixWork untuk absensi, rekrutmen, administrasi kepegawaian, onboarding OCR, persetujuan, dan payroll.",
-      en: "An overview of FixWork features for attendance, recruitment, employee administration, OCR onboarding, approvals, and payroll.",
+      id: "Pahami kapan proses HR perlu didigitalisasi dan bagaimana absensi, administrasi, serta payroll dapat dikelola dengan lebih terstruktur.",
+      en: "Learn when HR processes are ready for digitization and how attendance, administration, and payroll can be managed more systematically.",
     },
     sections: {
       id: [
@@ -195,19 +221,23 @@ export const articles = [
   },
   {
     slug: "notifikasi-real-time-dan-pemutaran-ulang-armada",
+    image: "/article-operations-data.jpg",
+    imageAlt: { id: "Data operasional ditinjau di dalam gudang", en: "Operational data being reviewed in a warehouse" },
+    publishedAt: null,
+    relatedSlugs: ["pelacakan-armada-dan-perjalanan-kendaraan", "cctv-ai-untuk-pemantauan-operasional", "hrms-absensi-rekrutmen-payroll", "absensi-karyawan-dan-area-absensi"],
     icon: Route,
     category: { id: "Pelacakan armada", en: "Fleet tracking" },
     title: {
-      id: "Notifikasi Real-Time dan Pemutaran Ulang Perjalanan Armada",
-      en: "Real-Time Alerts and Fleet Trip Playback",
+      id: "Data Operasional Banyak, tetapi Sulit Menjadi Keputusan?",
+      en: "Lots of Operational Data, but Hard to Turn into Decisions?",
     },
     excerpt: {
-      id: "Pahami bagaimana notifikasi kendaraan dan riwayat perjalanan membantu tim meninjau aktivitas armada.",
-      en: "Learn how vehicle alerts and trip history help teams review fleet activity.",
+      id: "Pelajari cara menghubungkan informasi dari aktivitas operasional dengan keputusan yang lebih tepat, mulai dari pemantauan aset hingga evaluasi kinerja.",
+      en: "Learn how to connect operational activity with better decisions, from asset monitoring to performance evaluation.",
     },
     description: {
-      id: "Kenali notifikasi real-time dan fitur pemutaran ulang perjalanan yang tersedia dalam sistem pelacakan armada FixTrack.",
-      en: "Explore real-time alerts and trip playback available in the FixTrack fleet tracking system.",
+      id: "Pelajari cara menghubungkan informasi dari aktivitas operasional dengan keputusan yang lebih tepat, mulai dari pemantauan aset hingga evaluasi kinerja.",
+      en: "Learn how to connect operational activity with better decisions, from asset monitoring to performance evaluation.",
     },
     sections: {
       id: [
@@ -256,6 +286,10 @@ export const articles = [
   },
   {
     slug: "absensi-karyawan-dan-area-absensi",
+    image: "/article-hr-workforce.jpg",
+    imageAlt: { id: "Karyawan mengelola administrasi tenaga kerja", en: "An employee managing workforce administration" },
+    publishedAt: null,
+    relatedSlugs: ["hrms-absensi-rekrutmen-payroll", "cctv-ai-untuk-pemantauan-operasional", "pelacakan-armada-dan-perjalanan-kendaraan", "notifikasi-real-time-dan-pemutaran-ulang-armada"],
     icon: Users,
     category: { id: "HRMS", en: "HRMS" },
     title: {
@@ -315,7 +349,7 @@ export const articles = [
       ],
     },
   },
-] as const;
+] satisfies readonly Article[];
 
 export function getArticle(slug: string) {
   return articles.find((article) => article.slug === slug);

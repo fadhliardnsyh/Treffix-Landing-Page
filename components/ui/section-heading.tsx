@@ -2,10 +2,12 @@ import type { ReactNode } from "react";
 
 type SectionHeadingProps = {
   eyebrow: string;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   children?: ReactNode;
   dark?: boolean;
+  showEyebrowLine?: boolean;
+  eyebrowClassName?: string;
   className?: string;
 };
 
@@ -15,14 +17,16 @@ export function SectionHeading({
   description,
   children,
   dark = false,
+  showEyebrowLine = true,
+  eyebrowClassName = "",
   className = "",
 }: SectionHeadingProps) {
   return (
     <div className={className}>
       <p
-        className={`mb-5 flex items-center gap-3 text-[10px] font-bold tracking-[.17em] ${dark ? "text-blue-300" : "text-blue-600"}`}
+        className={`mb-5 flex items-center gap-3 text-[10px] font-bold tracking-[.17em] ${dark ? "text-blue-300" : "text-blue-600"} ${eyebrowClassName}`}
       >
-        <span className={`h-px w-7 ${dark ? "bg-blue-400" : "bg-blue-500"}`} />
+        {showEyebrowLine && <span className={`h-px w-7 ${dark ? "bg-blue-400" : "bg-blue-500"}`} />}
         {eyebrow}
       </p>
       {title && (

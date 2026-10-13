@@ -2,28 +2,35 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Blocks, BriefcaseBusiness, BusFront, ChevronDown, Cpu, Pickaxe, Recycle, ShieldCheck, ThermometerSnowflake, Truck, Users, Menu, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { products, type Copy, type Lang } from "@/components/content";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { ButtonLink } from "@/components/ui/button-link";
+import { TREFFIX_WHATSAPP_PHONE } from "@/components/site-contact";
 
 const navIds = ["solutions", "industries", "about", "blog"];
+const megaMenuPanelClass = "flex min-h-[380px] flex-col justify-between gap-6 rounded-2xl border border-white/12 bg-black/75 p-4 shadow-[0_24px_70px_rgba(0,0,0,.42)] ring-1 ring-white/[.04] backdrop-blur-sm";
+const megaMenuDesktopItemClass = "group flex min-h-[88px] w-full items-start gap-3 rounded-xl border border-transparent p-3 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]";
+const megaMenuMobileItemClass = "group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]";
 
 export function SiteHeader({
   language,
   content,
-  contactLink,
 }: {
   language: Lang;
   content: Copy;
-  contactLink?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [customersOpen, setCustomersOpen] = useState(false);
+  const [companyOpen, setCompanyOpen] = useState(false);
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
+  const [mobileCustomersOpen, setMobileCustomersOpen] = useState(false);
+  const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
   const pathname = usePathname() || "";
@@ -31,20 +38,78 @@ export function SiteHeader({
   const localizedPath = pathname.replace(/^\/(id|en)(?=\/|$)/, "");
   const isHomePage = pathname === `/${language}` || pathname === `/${language}/` || pathname === "/";
   const sectionHref = (id: string) => isHomePage ? `#${id}` : `/${language}#${id}`;
-  const contactHref = contactLink || sectionHref("solutions");
+  const whatsappHref = `https://wa.me/${TREFFIX_WHATSAPP_PHONE}?text=${encodeURIComponent(content.headerConsultationMessage)}`;
   const headerRef = useRef<HTMLElement>(null);
   const solutionsTriggerRef = useRef<HTMLButtonElement>(null);
+  const customersTriggerRef = useRef<HTMLButtonElement>(null);
+  const companyTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
-  const solutionDescriptions: Record<(typeof products)[number]["id"], string> = {
-    FixTrack: content.track,
-    FixWork: content.work,
-    FixSight: content.sight,
-  };
   const solutionLabels = products.map((product) => ({
     name: product.id,
-    description: solutionDescriptions[product.id],
+    ...content.solutionMenuProducts[product.id],
     icon: product.icon,
     logo: product.logo,
+  }));
+  const companyLinks = [
+    {
+      label: content.companyMenu.about,
+      description: content.companyMenu.aboutDescription,
+      href: sectionHref("about"),
+      icon: BriefcaseBusiness,
+    },
+    {
+      label: content.companyMenu.stories,
+      description: content.companyMenu.storiesDescription,
+      href: `/${language}/blog`,
+      icon: Users,
+    },
+  ];
+  const customerGroupsByLocale: { id: "role" | "industry"; heading: string; items: { label: string; description?: string; icon: LucideIcon }[] }[] = language === "en"
+    ? [
+        { id: "role", heading: "Customer by Role", items: [
+          { label: "Business Owners & Executives", description: "Help your business run more efficiently with better visibility into assets, workforce, and operational activity.", icon: BriefcaseBusiness },
+          { label: "Operations & Fleet Managers", description: "Keep operations under control by monitoring vehicle conditions, trips, and fleet activity in one system.", icon: Truck },
+          { label: "HR & Workforce Leaders", description: "Simplify employee management so HR teams can work in a more structured way without repetitive manual processes.", icon: Users },
+          { label: "HSE, Safety & Security Leaders", description: "Improve workplace visibility with intelligent monitoring that helps teams identify potential risks earlier.", icon: ShieldCheck },
+          { label: "IT & Digital Transformation Leaders", description: "Choose solutions that fit operational needs and help your company use technology more effectively.", icon: Cpu },
+        ] },
+        { id: "industry", heading: "Customer by Industry", items: [
+          { label: "Logistics", description: "Track fleet activity and delivery journeys to keep distribution operations visible and under control.", icon: Truck },
+          { label: "Public Transportation", description: "Monitor vehicle locations and status to support more coordinated public transportation operations.", icon: BusFront },
+          { label: "Mining", description: "Track fleet and vehicle movement across large and remote mining sites.", icon: Pickaxe },
+          { label: "Ready-Mix Concrete", description: "Monitor concrete delivery journeys and fleet status with greater visibility.", icon: Blocks },
+          { label: "Construction", description: "Track vehicles and heavy equipment moving between project sites.", icon: Blocks },
+          { label: "Waste Management", description: "Track collection routes and fleet activity to support waste management operations.", icon: Recycle },
+          { label: "Bus Operators", description: "Monitor bus locations and journeys to help keep services coordinated.", icon: BusFront },
+          { label: "Cold Chain", description: "Monitor temperature-sensitive goods and delivery routes to keep cold-chain operations visible and reliable.", icon: ThermometerSnowflake },
+        ] },
+      ]
+    : [
+        { id: "role", heading: "Pelanggan berdasarkan Peran", items: [
+          { label: "Pemilik Bisnis & Eksekutif", description: "Bantu bisnis berjalan lebih efisien dengan visibilitas yang lebih baik terhadap aset, tenaga kerja, dan aktivitas operasional.", icon: BriefcaseBusiness },
+          { label: "Manajer Operasional & Armada", description: "Jaga operasional tetap terkendali dengan memantau kondisi kendaraan, perjalanan, dan aktivitas armada dalam satu sistem.", icon: Truck },
+          { label: "Pimpinan HR & Tenaga Kerja", description: "Sederhanakan pengelolaan karyawan agar tim HR bisa bekerja lebih terstruktur tanpa terbebani proses manual yang berulang.", icon: Users },
+          { label: "Pimpinan HSE, Keselamatan & Keamanan", description: "Tingkatkan visibilitas di area kerja dengan pemantauan cerdas yang membantu tim mengenali potensi risiko lebih awal.", icon: ShieldCheck },
+          { label: "Pimpinan TI & Transformasi Digital", description: "Pilih solusi yang sesuai dengan kebutuhan operasional dan bantu perusahaan memanfaatkan teknologi secara lebih efektif.", icon: Cpu },
+        ] },
+        { id: "industry", heading: "Pelanggan berdasarkan Industri", items: [
+          { label: "Logistik", description: "Pantau aktivitas armada dan perjalanan pengiriman agar operasional distribusi tetap terlihat dan terkendali.", icon: Truck },
+          { label: "Transportasi Umum", description: "Pantau lokasi dan status kendaraan untuk mendukung operasional transportasi umum yang lebih terkoordinasi.", icon: BusFront },
+          { label: "Pertambangan", description: "Pantau pergerakan armada dan kendaraan di area tambang yang luas dan terpencil.", icon: Pickaxe },
+          { label: "Beton Siap Pakai", description: "Pantau perjalanan armada pengiriman beton dan status pengiriman dengan lebih mudah.", icon: Blocks },
+          { label: "Konstruksi", description: "Pantau kendaraan dan alat berat yang bergerak di antara berbagai lokasi proyek.", icon: Blocks },
+          { label: "Pengelolaan Limbah", description: "Pantau rute pengangkutan dan aktivitas armada untuk mendukung operasional pengelolaan limbah.", icon: Recycle },
+          { label: "Operator Bus", description: "Pantau lokasi dan perjalanan bus agar operasional layanan lebih terkoordinasi.", icon: BusFront },
+          { label: "Rantai Dingin", description: "Pantau barang yang sensitif terhadap suhu dan rute pengiriman agar operasional rantai dingin tetap terpantau dan terjaga.", icon: ThermometerSnowflake },
+        ] },
+      ];
+  const customerSlugs = {
+    role: ["business-owners-executives", "operations-fleet-managers", "hr-workforce-leaders", "hse-safety-security-leaders", "it-digital-transformation-leaders"],
+    industry: ["logistics", "public-transportation", "mining", "ready-mix-concrete", "construction", "waste-management", "bus-operators", "cold-chain"],
+  } as const;
+  const customerGroups = customerGroupsByLocale.map((group) => ({
+    ...group,
+    items: group.items.map((item, index) => ({ ...item, slug: customerSlugs[group.id][index] })),
   }));
   const solutionsMenuText = language === "en"
     ? {
@@ -68,21 +133,31 @@ export function SiteHeader({
   }, []);
 
   useEffect(() => {
-    if (!solutionsOpen && !menuOpen) return;
+    if (!solutionsOpen && !customersOpen && !companyOpen && !menuOpen) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       setSolutionsOpen(false);
+      setCustomersOpen(false);
+      setCompanyOpen(false);
       setMenuOpen(false);
       setMobileSolutionsOpen(false);
+      setMobileCustomersOpen(false);
+      setMobileCompanyOpen(false);
       if (solutionsOpen) solutionsTriggerRef.current?.focus();
+      else if (customersOpen) customersTriggerRef.current?.focus();
+      else if (companyOpen) companyTriggerRef.current?.focus();
       else mobileMenuTriggerRef.current?.focus();
     };
     const closeOnOutside = (event: PointerEvent) => {
       if (headerRef.current?.contains(event.target as Node)) return;
       setSolutionsOpen(false);
+      setCustomersOpen(false);
+      setCompanyOpen(false);
       setMenuOpen(false);
       setMobileSolutionsOpen(false);
+      setMobileCustomersOpen(false);
+      setMobileCompanyOpen(false);
     };
 
     document.addEventListener("keydown", closeOnEscape);
@@ -91,7 +166,7 @@ export function SiteHeader({
       document.removeEventListener("keydown", closeOnEscape);
       document.removeEventListener("pointerdown", closeOnOutside);
     };
-  }, [solutionsOpen, menuOpen]);
+  }, [solutionsOpen, customersOpen, companyOpen, menuOpen]);
 
   return (
     <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 text-white">
@@ -122,7 +197,7 @@ export function SiteHeader({
             <div
               key={item}
               className="relative"
-              onMouseEnter={() => setSolutionsOpen(true)}
+              onMouseEnter={() => { setCustomersOpen(false); setCompanyOpen(false); setSolutionsOpen(true); }}
               onMouseLeave={(event) => {
                 if (!event.currentTarget.contains(document.activeElement)) setSolutionsOpen(false);
               }}
@@ -152,22 +227,24 @@ export function SiteHeader({
                     exit={{ opacity: 0, y: 6, scale: 0.985 }}
                     transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
-                    style={{ width: "min(45rem, calc(100vw - 2rem))" }}
+                    style={{ width: "min(54rem, calc(100vw - 2rem))" }}
                   >
-                    <div className="flex min-h-[240px] flex-col justify-between gap-5 rounded-2xl border border-white/12 bg-black/75 p-4 shadow-[0_24px_70px_rgba(0,0,0,.42)] ring-1 ring-white/[.04] backdrop-blur-sm">
+                    <div className={megaMenuPanelClass}>
                       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-1">
                         <h2 className="text-sm font-semibold tracking-[-.01em] text-white/90">{solutionsMenuText.title}</h2>
                         <p className="text-[11px] text-white/45">{solutionsMenuText.supporting}</p>
                       </div>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                        {solutionLabels.map(({ name, description, icon: Icon, logo }) => (
+                      <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+                        {solutionLabels.map(({ name, category, description, link, icon: Icon, logo }) => (
                           <a
                             key={name}
-                            href={sectionHref("solutions")}
+                            href={name === "FixTrack" ? "https://fixtrack.id/" : sectionHref("solutions")}
+                            target={name === "FixTrack" ? "_blank" : undefined}
+                            rel={name === "FixTrack" ? "noopener noreferrer" : undefined}
                             onClick={() => setSolutionsOpen(false)}
-                            className="group flex min-h-[88px] w-full items-start gap-3 rounded-xl border border-transparent p-3 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                            className={megaMenuDesktopItemClass}
                           >
-                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-blue-300/15 bg-blue-400/[.09] text-blue-200 transition-colors group-hover:bg-blue-400/[.15]">
+                            <span className="mega-menu-icon-container grid h-10 w-10 shrink-0 place-items-center rounded-xl">
                               {logo ? (
                                 <Image src={logo} alt="" aria-hidden="true" width={28} height={28} className="h-7 w-7 object-contain" />
                               ) : Icon ? (
@@ -176,7 +253,12 @@ export function SiteHeader({
                             </span>
                             <span className="min-w-0 pt-0.5">
                               <span className="block text-[13px] font-semibold text-white/90">{name}</span>
+                              <span className="mt-1 block text-[11px] leading-[1.55] text-white/55">{category}</span>
                               <span className="mt-1 block text-[11px] leading-[1.55] text-white/55">{description}</span>
+                              <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold leading-[1.55] text-[var(--blue)] transition-colors group-hover:text-blue-300 group-hover:underline group-focus-visible:text-blue-300 group-focus-visible:underline">
+                                {link}
+                                <ArrowUpRight size={12} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5" />
+                              </span>
                             </span>
                           </a>
                         ))}
@@ -191,6 +273,135 @@ export function SiteHeader({
                           {solutionsMenuText.all}
                           <ArrowRight size={14} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5" />
                         </a>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : index === 1 ? (
+            <div
+              key={item}
+              className="relative"
+              onMouseEnter={() => { setSolutionsOpen(false); setCompanyOpen(false); setCustomersOpen(true); }}
+              onMouseLeave={(event) => {
+                if (!event.currentTarget.contains(document.activeElement)) setCustomersOpen(false);
+              }}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setCustomersOpen(false);
+              }}
+            >
+              <button
+                ref={customersTriggerRef}
+                id="customers-trigger"
+                type="button"
+                aria-expanded={customersOpen}
+                aria-controls="customers-mega-menu"
+                onClick={(event) => setCustomersOpen(event.detail === 0 ? (open) => !open : true)}
+                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+              >
+                {item}
+                <ChevronDown size={13} aria-hidden="true" className={`transition-transform duration-200 ${customersOpen ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {customersOpen && (
+                  <motion.div
+                    id="customers-mega-menu"
+                    role="region"
+                    aria-labelledby="customers-trigger"
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.985 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute left-1/2 top-full z-50 w-[min(54rem,calc(100vw-2rem))] -translate-x-1/2 pt-3"
+                  >
+                    <div className={`${megaMenuPanelClass} customers-dropdown-scroll max-h-[min(78vh,48rem)] overflow-y-auto`}>
+                      <div className="space-y-5">
+                        {customerGroups.map((group) => (
+                          <section key={group.id} aria-labelledby={`customers-${group.id}-heading`}>
+                            <h2 id={`customers-${group.id}-heading`} className="mb-3 px-1 text-[13px] font-semibold tracking-[-.01em] text-white/90">
+                              {group.heading}
+                            </h2>
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                              {group.items.map(({ slug, label, description, icon: Icon }) => (
+                                <Link
+                                  key={label}
+                                  href={`/${language}/customers/${slug}`}
+                                  onClick={() => setCustomersOpen(false)}
+                                  className={`${megaMenuDesktopItemClass} items-center`}
+                                >
+                                  <span className="mega-menu-icon-container grid h-10 w-10 shrink-0 place-items-center rounded-xl">
+                                    <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                                  </span>
+                                  <span className="min-w-0">
+                                    <span className="block text-[13px] font-semibold text-white/90">{label}</span>
+                                    {description && <span className="mt-1 block text-[11px] leading-[1.55] text-white/55">{description}</span>}
+                                  </span>
+                                </Link>
+                              ))}
+                            </div>
+                          </section>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : index === 2 ? (
+            <div
+              key={item}
+              className="relative"
+              onMouseEnter={() => { setSolutionsOpen(false); setCustomersOpen(false); setCompanyOpen(true); }}
+              onMouseLeave={(event) => {
+                if (!event.currentTarget.contains(document.activeElement)) setCompanyOpen(false);
+              }}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setCompanyOpen(false);
+              }}
+            >
+              <button
+                ref={companyTriggerRef}
+                id="company-trigger"
+                type="button"
+                aria-expanded={companyOpen}
+                aria-controls="company-menu"
+                onClick={(event) => setCompanyOpen(event.detail === 0 ? (open) => !open : true)}
+                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+              >
+                {item}
+                <ChevronDown size={13} aria-hidden="true" className={`transition-transform duration-200 ${companyOpen ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {companyOpen && (
+                  <motion.div
+                    id="company-menu"
+                    role="region"
+                    aria-labelledby="company-trigger"
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.985 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute left-1/2 top-full z-50 w-[min(54rem,calc(100vw-2rem))] -translate-x-1/2 pt-3"
+                  >
+                    <div className={`${megaMenuPanelClass} !min-h-0 !py-3`}>
+                      <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+                        {companyLinks.map(({ label, description, href, icon: Icon }) => (
+                          <a
+                            key={label}
+                            href={href}
+                            onClick={() => setCompanyOpen(false)}
+                            className={`${megaMenuDesktopItemClass} items-center`}
+                          >
+                            <span className="mega-menu-icon-container grid h-10 w-10 shrink-0 place-items-center rounded-xl">
+                              <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                            </span>
+                            <span className="min-w-0 pt-0.5">
+                              <span className="block text-[13px] font-semibold text-white/90">{label}</span>
+                              <span className="mt-1 block text-[11px] leading-[1.55] text-white/55">{description}</span>
+                            </span>
+                          </a>
+                        ))}
                       </div>
                     </div>
                   </motion.div>
@@ -219,8 +430,8 @@ export function SiteHeader({
 
         <div className="hidden items-center gap-3 lg:flex">
           <LanguageSwitch language={language} label={content.switchLanguage} destination={localizedPath} />
-          <ButtonLink href={contactHref} variant="light" className="group min-h-11 px-5 text-[12px]">
-            {contactLink ? content.talk : content.explore}
+          <ButtonLink href={whatsappHref} target="_blank" rel="noopener noreferrer" variant="light" className="group min-h-11 px-5 text-[12px]">
+            {content.headerConsultationCta}
             <ArrowUpRight size={14} className="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </ButtonLink>
         </div>
@@ -247,7 +458,7 @@ export function SiteHeader({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.2 }}
-            className="absolute left-4 right-4 top-full z-10 mx-auto max-w-[26rem] overflow-hidden rounded-2xl border border-white/12 bg-black/75 shadow-[0_24px_70px_rgba(0,0,0,.42)] backdrop-blur-sm lg:hidden"
+            className="absolute left-4 right-4 top-full z-10 mx-auto max-h-[calc(100svh-5rem)] max-w-[26rem] overflow-y-auto rounded-2xl border border-white/12 bg-black/75 shadow-[0_24px_70px_rgba(0,0,0,.42)] backdrop-blur-sm lg:hidden"
           >
             <div className="flex flex-col p-3">
               <div className="flex items-center justify-between border-b border-white/[.06] px-2 pb-3">
@@ -259,7 +470,7 @@ export function SiteHeader({
                   <button
                     type="button"
                     aria-expanded={mobileSolutionsOpen}
-                    onClick={() => setMobileSolutionsOpen((open) => !open)}
+                    onClick={() => { setMobileCustomersOpen(false); setMobileCompanyOpen(false); setMobileSolutionsOpen((open) => !open); }}
                     className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
                   >
                     {item}
@@ -282,7 +493,7 @@ export function SiteHeader({
                             onClick={() => { setMenuOpen(false); setMobileSolutionsOpen(false); }}
                             className="group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
                           >
-                            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-blue-300/15 bg-blue-400/[.09] text-blue-200 transition-colors group-hover:bg-blue-400/[.15]">
+                            <span className="mega-menu-icon-container grid h-9 w-9 shrink-0 place-items-center rounded-xl">
                               {logo ? (
                                 <Image src={logo} alt="" aria-hidden="true" width={24} height={24} className="h-6 w-6 object-contain" />
                               ) : Icon ? (
@@ -295,6 +506,103 @@ export function SiteHeader({
                             </span>
                           </a>
                         ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : index === 1 ? (
+                <div key={item} className="border-b border-white/[.06]">
+                  <button
+                    type="button"
+                    aria-expanded={mobileCustomersOpen}
+                    aria-controls="mobile-customer-menu"
+                    onClick={() => { setMobileSolutionsOpen(false); setMobileCompanyOpen(false); setMobileCustomersOpen((open) => !open); }}
+                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                  >
+                    {item}
+                    <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-200 ${mobileCustomersOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {mobileCustomersOpen && (
+                      <motion.div
+                        id="mobile-customer-menu"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.18 }}
+                        className="overflow-hidden pb-2 pt-1"
+                      >
+                        <div className="space-y-4 px-1">
+                          {customerGroups.map((group) => (
+                            <section key={group.id} aria-labelledby={`mobile-customers-${group.id}-heading`}>
+                            <h2 id={`mobile-customers-${group.id}-heading`} className="mb-2 px-1 text-sm font-semibold tracking-[-.01em] text-white/90">
+                                {group.heading}
+                              </h2>
+                              <div className="grid grid-cols-1 gap-1.5">
+                                {group.items.map(({ slug, label, description, icon: Icon }) => (
+                                  <Link
+                                    key={label}
+                                    href={`/${language}/customers/${slug}`}
+                                    onClick={() => { setMenuOpen(false); setMobileCustomersOpen(false); }}
+                                    className={megaMenuMobileItemClass}
+                                  >
+                                    <span className="mega-menu-icon-container grid h-9 w-9 shrink-0 place-items-center rounded-xl">
+                                      <Icon size={16} strokeWidth={1.8} aria-hidden="true" />
+                                    </span>
+                                    <span className="min-w-0">
+                                      <span className="block text-xs font-semibold text-white/90">{label}</span>
+                                      {description && <span className="mt-0.5 block text-[10px] leading-4 text-white/50">{description}</span>}
+                                    </span>
+                                  </Link>
+                                ))}
+                              </div>
+                            </section>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : index === 2 ? (
+                <div key={item} className="border-b border-white/[.06]">
+                  <button
+                    type="button"
+                    aria-expanded={mobileCompanyOpen}
+                    aria-controls="mobile-company-menu"
+                    onClick={() => { setMobileSolutionsOpen(false); setMobileCustomersOpen(false); setMobileCompanyOpen((open) => !open); }}
+                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                  >
+                    {item}
+                    <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-200 ${mobileCompanyOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {mobileCompanyOpen && (
+                      <motion.div
+                        id="mobile-company-menu"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.18 }}
+                        className="overflow-hidden pb-2 pt-1"
+                      >
+                        <div className="space-y-1 px-1">
+                          {companyLinks.map(({ label, description, href, icon: Icon }) => (
+                            <a
+                              key={label}
+                              href={href}
+                              onClick={() => { setMenuOpen(false); setMobileCompanyOpen(false); }}
+                              className={`${megaMenuMobileItemClass} items-center`}
+                            >
+                              <span className="mega-menu-icon-container grid h-9 w-9 shrink-0 place-items-center rounded-xl">
+                                <Icon size={16} strokeWidth={1.8} aria-hidden="true" />
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block text-xs font-semibold text-white/90">{label}</span>
+                                <span className="mt-0.5 block text-[10px] leading-4 text-white/50">{description}</span>
+                              </span>
+                            </a>
+                          ))}
                         </div>
                       </motion.div>
                     )}
@@ -322,10 +630,12 @@ export function SiteHeader({
               ))}
               <a
                 className="button-primary micro-interaction mt-3 flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold"
-                href={contactHref}
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
               >
-                {contactLink ? content.talk : content.explore}
+                {content.headerConsultationCta}
               </a>
             </div>
           </motion.nav>
@@ -364,13 +674,13 @@ function LanguageSwitch({
               lang={locale}
               aria-label={name}
               aria-current={active ? "page" : undefined}
-              className={`relative isolate grid ${compact ? "h-9 min-w-9 px-2" : "h-9 min-w-10 px-2.5"} place-items-center rounded-full text-[11px] font-semibold tracking-wide transition-colors ${active ? "text-[#071a35]" : "text-white/65 hover:text-white"}`}
+              className={`relative isolate grid ${compact ? "h-9 min-w-9 px-2" : "h-9 min-w-10 px-2.5"} place-items-center rounded-full text-[11px] font-semibold tracking-wide transition-colors focus-visible:bg-[#0b75ff]/15 focus-visible:text-[#0b75ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff] ${active ? "text-[#0b75ff]" : "text-white/65 hover:text-white"}`}
             >
               {active && (
                 <motion.span
                   layoutId="language-switch-active-pill"
                   aria-hidden="true"
-                  className="absolute inset-0 -z-10 rounded-full bg-white shadow-sm"
+                  className="absolute inset-0 -z-10 rounded-full bg-[#0b75ff]/15"
                   initial={{ opacity: 0, scale: 0.78 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: "spring", stiffness: 420, damping: 30, mass: 0.7 }}

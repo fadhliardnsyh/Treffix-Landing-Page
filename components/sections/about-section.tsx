@@ -26,56 +26,76 @@ type PartnerWordmark = {
 
 export function AboutSection({ content, language }: { content: Copy; language: Lang }) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const partnerAreaRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
   const [scrollPinned, setScrollPinned] = useState(false);
   const [revealReady, setRevealReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [partnerAreaInView, setPartnerAreaInView] = useState(false);
+  const [mobileTextReady, setMobileTextReady] = useState(false);
   const [partnerAreaReady, setPartnerAreaReady] = useState(false);
   const [partnerBatchIndex, setPartnerBatchIndex] = useState(0);
   const titleLines = useMeasuredLines(titleRef, content.aboutTitle);
   const descriptionLines = useMeasuredLines(descriptionRef, content.aboutText);
   const reduceMotion = useReducedMotion() ?? false;
-  const offset: ("start start" | "end end" | "start end" | "end start")[] = scrollPinned
-    ? ["start start", "end end"]
+  const offset: ("start 85%" | "end end" | "start end" | "end start")[] = scrollPinned
+    ? ["start 85%", "end end"]
     : ["start end", "end start"];
   const { scrollYProgress } = useScroll({ target: sectionRef, offset });
-  const revealProgress = useTransform(scrollYProgress, [0, 0.72], [0, 1], { clamp: true });
+  const revealProgress = useTransform(scrollYProgress, [0, isMobile ? 0.24 : 0.72], [0, 1], { clamp: true });
   const partnerAreaOpacity = useTransform(revealProgress, [0.78, 0.94], [0, 1]);
   const partnerAreaY = useTransform(revealProgress, [0.78, 0.94], [22, 0]);
   const partnerBatchCount = Math.ceil(partnerWordmarks.length / partnersPerBatch);
   const currentBatchSize = Math.min(partnersPerBatch, partnerWordmarks.length - partnerBatchIndex * partnersPerBatch);
 
   useMotionValueEvent(revealProgress, "change", (latest) => {
-    const isReady = latest >= 0.94;
+    const textReady = latest >= 0.9;
+    setMobileTextReady((current) => current === textReady ? current : textReady);
+    const isReady = latest >= (isMobile ? 0.05 : 0.94);
     setPartnerAreaReady((current) => current === isReady ? current : isReady);
   });
 
   useEffect(() => {
-    setPartnerAreaReady(revealProgress.get() >= 0.94);
-  }, [revealProgress]);
+    setPartnerAreaReady(revealProgress.get() >= (isMobile ? 0.05 : 0.94));
+  }, [isMobile, revealProgress]);
 
   useEffect(() => {
-    if (reduceMotion || !partnerAreaReady || partnerBatchCount < 2) return;
+    if (!isMobile || partnerAreaInView) return;
+    const target = partnerAreaRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setPartnerAreaInView(true);
+      observer.disconnect();
+    }, { threshold: 0 });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [isMobile, partnerAreaInView]);
+
+  useEffect(() => {
+    if (reduceMotion || isMobile || !partnerAreaReady || partnerBatchCount < 2) return;
     const interval = window.setInterval(() => {
       setPartnerBatchIndex((current) => (current + 1) % partnerBatchCount);
     }, 2000);
     return () => window.clearInterval(interval);
-  }, [partnerAreaReady, partnerBatchCount, reduceMotion]);
+  }, [isMobile, partnerAreaReady, partnerBatchCount, reduceMotion]);
 
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1024px) and (min-height: 760px) and (hover: hover) and (pointer: fine)");
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
     const update = () => {
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      setScrollPinned(query.matches && !reduceMotion && !prefersReducedMotion);
-      setRevealReady(!reduceMotion && !prefersReducedMotion);
+      setScrollPinned(query.matches && !reduceMotion);
+      setIsMobile(mobileQuery.matches);
+      setRevealReady(!reduceMotion);
     };
     update();
     query.addEventListener("change", update);
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    reducedMotionQuery.addEventListener("change", update);
+    mobileQuery.addEventListener("change", update);
     return () => {
       query.removeEventListener("change", update);
-      reducedMotionQuery.removeEventListener("change", update);
+      mobileQuery.removeEventListener("change", update);
     };
   }, [reduceMotion]);
 
@@ -103,6 +123,7 @@ export function AboutSection({ content, language }: { content: Copy; language: L
                 return (
                   <ScrollWord
                     key={`title-word-${index}`}
+                    className={wordIndex < 2 ? "text-[var(--blue)]" : undefined}
                     progress={revealProgress}
                     wordIndex={wordIndex}
                     lineIndex={titleLines.indexes[wordIndex] ?? 0}
@@ -133,32 +154,86 @@ export function AboutSection({ content, language }: { content: Copy; language: L
             </p>
 
             <motion.div
+              ref={partnerAreaRef}
               className="mx-auto mt-12 max-w-[1040px] sm:mt-16"
-              style={reduceMotion || !revealReady || !linesMeasured
-                ? { opacity: 1, y: 0 }
-                : { opacity: partnerAreaOpacity, y: partnerAreaY }}
+              style={isMobile
+                ? undefined
+                : reduceMotion || !revealReady || !linesMeasured
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: partnerAreaOpacity, y: partnerAreaY }}
+              animate={isMobile
+                ? { opacity: partnerAreaInView && mobileTextReady ? 1 : 0, y: partnerAreaInView && mobileTextReady ? 0 : 8 }
+                : undefined}
+              transition={isMobile
+                ? { duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }
+                : undefined}
             >
-              <div className="relative h-[160px] overflow-hidden sm:h-[100px] lg:h-10">
+              <h3 className="mb-6 text-center text-sm font-medium tracking-[-.02em] text-slate-600 sm:mb-7 sm:text-base">
+                {content.partnersTitle}
+              </h3>
+              {reduceMotion ? (
+                <ul className="grid grid-cols-3 items-center justify-items-center gap-x-4 gap-y-5 md:hidden">
+                  {partnerWordmarks.map((partner) => (
+                    <li key={partner.id} className="flex h-12 w-full items-center justify-center px-1">
+                      <img
+                        src={partner.logoSrc}
+                        alt={partner.name}
+                        decoding="async"
+                        className="max-h-8 max-w-full object-contain"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div
+                  role="region"
+                  aria-label={language === "id" ? "Logo mitra Treffix" : "Treffix client logos"}
+                  aria-roledescription="marquee"
+                  className="relative h-[76px] overflow-hidden md:hidden"
+                >
+                  <div className="partner-marquee-track flex w-max items-center">
+                    {[0, 1].map((copyIndex) => (
+                      <ul
+                        key={copyIndex}
+                        aria-hidden={copyIndex === 1 ? true : undefined}
+                        className="flex shrink-0 items-center gap-6 px-3"
+                      >
+                        {partnerWordmarks.map((partner) => (
+                          <li key={`${copyIndex}-${partner.id}`} className="flex h-14 w-32 shrink-0 items-center justify-center">
+                            <img
+                              src={partner.logoSrc}
+                              alt={partner.name}
+                              decoding="async"
+                              className="max-h-10 max-w-[112px] object-contain"
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="relative hidden h-[112px] overflow-hidden md:block lg:h-14">
                 <AnimatePresence initial={false} mode="sync">
                   <motion.ul
                     key={partnerBatchIndex}
                     aria-label={language === "id" ? "Logo mitra Treffix" : "Treffix client logos"}
-                    className={`absolute inset-0 grid grid-cols-2 items-center justify-items-center gap-x-5 gap-y-5 lg:gap-8 ${currentBatchSize < partnersPerBatch ? "sm:grid-cols-4 lg:grid-cols-4" : "sm:grid-cols-3 lg:grid-cols-5"}`}
-                    initial={reduceMotion ? false : { y: "100%", opacity: 0 }}
+                    className={`absolute inset-0 grid grid-cols-2 items-center justify-items-center gap-x-3 gap-y-3 sm:gap-x-5 sm:gap-y-3 lg:gap-8 ${currentBatchSize < partnersPerBatch ? "sm:grid-cols-4 lg:grid-cols-4" : "sm:grid-cols-3 lg:grid-cols-5"}`}
+                    initial={reduceMotion ? false : isMobile ? { y: "10%", opacity: 1 } : { y: "100%", opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={reduceMotion ? undefined : { y: "-100%", opacity: 0 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    exit={reduceMotion ? undefined : { y: isMobile ? "-10%" : "-100%", opacity: isMobile ? 1 : 0 }}
+                    transition={{ duration: reduceMotion ? 0 : isMobile ? 0.24 : 0.45, ease: [0.22, 1, 0.36, 1] }}
                   >
                     {partnerWordmarks
                       .slice(partnerBatchIndex * partnersPerBatch, (partnerBatchIndex + 1) * partnersPerBatch)
                       .map((partner) => {
                         return (
-                          <li key={partner.id} className="flex min-h-10 w-full items-center justify-center">
+                          <li key={partner.id} className="flex min-h-10 w-full items-center justify-center sm:min-h-12">
                             <img
                               src={partner.logoSrc}
                               alt={partner.name}
                               decoding="async"
-                              className="max-h-9 max-w-[160px] object-contain grayscale opacity-75"
+                              className="max-h-10 max-w-[160px] object-contain sm:max-h-12 sm:max-w-[200px]"
                             />
                           </li>
                         );
@@ -235,6 +310,7 @@ function useMeasuredLines<T extends HTMLElement>(
 
 function ScrollWord({
   children,
+  className,
   progress,
   wordIndex,
   lineIndex,
@@ -243,6 +319,7 @@ function ScrollWord({
   revealReady,
 }: {
   children: string;
+  className?: string;
   progress: MotionValue<number>;
   wordIndex: number;
   lineIndex: number;
@@ -258,7 +335,7 @@ function ScrollWord({
   return (
     <motion.span
       data-about-word={wordIndex}
-      className="about-reveal-word inline-block align-baseline"
+      className={`about-reveal-word inline-block align-baseline ${className ?? ""}`}
       style={{ opacity: reduceMotion || !revealReady ? 1 : opacity }}
     >
       {children}

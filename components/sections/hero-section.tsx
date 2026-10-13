@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Globe2 } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import type { Copy, Lang } from "@/components/content";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/ui/reveal";
@@ -40,19 +40,6 @@ export function HeroSection({ content, language }: { content: Copy; language: La
                 {language === "id" ? "Kenali Treffix" : "Meet Treffix"}
                 <ArrowDown size={14} />
               </ButtonLink>
-            </div>
-          </Reveal>
-          <Reveal delay={0.29}>
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 border-t border-white/15 pt-6 text-center text-[11px] text-white/75">
-              <span className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
-                {content.heroProof}
-              </span>
-              <span className="hidden h-3 w-px bg-white/25 sm:block" />
-              <span className="flex items-center gap-2">
-                <Globe2 size={13} className="text-white/75" />
-                {content.coverage}
-              </span>
             </div>
           </Reveal>
         </div>
