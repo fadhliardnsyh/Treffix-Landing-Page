@@ -6,10 +6,10 @@ type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 };
 
 const variants = {
-  primary: "button-primary rounded-full px-5 text-white",
+  primary: "button-primary rounded-full px-5",
   secondary: "rounded-full border border-white/20 px-5 text-white/90 hover:border-white/40 hover:text-white",
-  light: "button-primary rounded-full px-5 text-white",
-  text: "text-blue-600 hover:text-blue-700",
+  light: "button-primary rounded-full px-5",
+  text: "text-[#071a35] hover:text-[#071a35]",
 };
 
 export function ButtonLink({

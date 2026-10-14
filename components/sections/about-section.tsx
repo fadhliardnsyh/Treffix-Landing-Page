@@ -1,28 +1,22 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import type { MotionValue } from "framer-motion";
 import type { Copy, Lang } from "@/components/content";
+import { PartnerLogoStrip, type PartnerLogo } from "@/components/sections/partner-logo-strip";
 
-const partnersPerBatch = 5;
-const partnerWordmarks: PartnerWordmark[] = [
-  { id: "b-log", name: "B-Log", logoSrc: "/client-logos/b-log-logo.webp" },
-  { id: "simpan-sini", name: "Simpan Sini Aja", logoSrc: "/client-logos/ssa-logo.webp" },
-  { id: "fleetify", name: "Fleetify", logoSrc: "/client-logos/fleetify-logo-bold.webp" },
-  { id: "sembilan-sejahtera", name: "Sembilan Sejahtera", logoSrc: "/client-logos/sembilan-sejahtera-logo.webp" },
-  { id: "paus", name: "Paus", logoSrc: "/client-logos/paus-logo.webp" },
-  { id: "ibu", name: "IBU", logoSrc: "/client-logos/ibu-logo-bold.webp" },
-  { id: "kon", name: "KON", logoSrc: "/client-logos/kon-logo.webp" },
-  { id: "dom", name: "DOM", logoSrc: "/client-logos/dom-logo-bold.webp" },
-  { id: "gpb", name: "GPB", logoSrc: "/client-logos/gpb-logo.webp" },
+const partnerWordmarks: PartnerLogo[] = [
+  { name: "B-Log", src: "/client-logos/b-log-logo.webp" },
+  { name: "Simpan Sini Aja", src: "/client-logos/ssa-logo.webp" },
+  { name: "Fleetify", src: "/client-logos/fleetify-logo-bold.webp" },
+  { name: "Sembilan Sejahtera", src: "/client-logos/sembilan-sejahtera-logo.webp" },
+  { name: "Paus", src: "/client-logos/paus-logo.webp" },
+  { name: "IBU", src: "/client-logos/ibu-logo-bold.webp" },
+  { name: "KON", src: "/client-logos/kon-logo.webp" },
+  { name: "DOM", src: "/client-logos/dom-logo-bold.webp" },
+  { name: "GPB", src: "/client-logos/gpb-logo.webp" },
 ];
-
-type PartnerWordmark = {
-  id: string;
-  name: string;
-  logoSrc: string;
-};
 
 export function AboutSection({ content, language }: { content: Copy; language: Lang }) {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -35,7 +29,6 @@ export function AboutSection({ content, language }: { content: Copy; language: L
   const [partnerAreaInView, setPartnerAreaInView] = useState(false);
   const [mobileTextReady, setMobileTextReady] = useState(false);
   const [partnerAreaReady, setPartnerAreaReady] = useState(false);
-  const [partnerBatchIndex, setPartnerBatchIndex] = useState(0);
   const titleLines = useMeasuredLines(titleRef, content.aboutTitle);
   const descriptionLines = useMeasuredLines(descriptionRef, content.aboutText);
   const reduceMotion = useReducedMotion() ?? false;
@@ -46,8 +39,6 @@ export function AboutSection({ content, language }: { content: Copy; language: L
   const revealProgress = useTransform(scrollYProgress, [0, isMobile ? 0.24 : 0.72], [0, 1], { clamp: true });
   const partnerAreaOpacity = useTransform(revealProgress, [0.78, 0.94], [0, 1]);
   const partnerAreaY = useTransform(revealProgress, [0.78, 0.94], [22, 0]);
-  const partnerBatchCount = Math.ceil(partnerWordmarks.length / partnersPerBatch);
-  const currentBatchSize = Math.min(partnersPerBatch, partnerWordmarks.length - partnerBatchIndex * partnersPerBatch);
 
   useMotionValueEvent(revealProgress, "change", (latest) => {
     const textReady = latest >= 0.9;
@@ -73,14 +64,6 @@ export function AboutSection({ content, language }: { content: Copy; language: L
     observer.observe(target);
     return () => observer.disconnect();
   }, [isMobile, partnerAreaInView]);
-
-  useEffect(() => {
-    if (reduceMotion || isMobile || !partnerAreaReady || partnerBatchCount < 2) return;
-    const interval = window.setInterval(() => {
-      setPartnerBatchIndex((current) => (current + 1) % partnerBatchCount);
-    }, 2000);
-    return () => window.clearInterval(interval);
-  }, [isMobile, partnerAreaReady, partnerBatchCount, reduceMotion]);
 
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1024px) and (min-height: 760px) and (hover: hover) and (pointer: fine)");
@@ -110,7 +93,7 @@ export function AboutSection({ content, language }: { content: Copy; language: L
     <section id="about" ref={sectionRef} className="about-reveal-section relative overflow-clip bg-white">
       <div className="about-reveal-stage flex min-h-[680px] items-center py-20 sm:py-24 lg:min-h-screen lg:py-16">
         <div className="container-wide relative mx-auto w-full">
-          <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 -z-0 h-[min(75vw,680px)] w-[min(75vw,680px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(11,117,255,.055),transparent_70%)]" />
+          <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 -z-0 h-[min(75vw,680px)] w-[min(75vw,680px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--blue)_5.5%,transparent),transparent_70%)]" />
           <div className="relative z-10 mx-auto max-w-[1120px] text-center">
             <h2
               ref={titleRef}
@@ -171,76 +154,7 @@ export function AboutSection({ content, language }: { content: Copy; language: L
               <h3 className="mb-6 text-center text-sm font-medium tracking-[-.02em] text-slate-600 sm:mb-7 sm:text-base">
                 {content.partnersTitle}
               </h3>
-              {reduceMotion ? (
-                <ul className="grid grid-cols-3 items-center justify-items-center gap-x-4 gap-y-5 md:hidden">
-                  {partnerWordmarks.map((partner) => (
-                    <li key={partner.id} className="flex h-12 w-full items-center justify-center px-1">
-                      <img
-                        src={partner.logoSrc}
-                        alt={partner.name}
-                        decoding="async"
-                        className="max-h-8 max-w-full object-contain"
-                      />
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div
-                  role="region"
-                  aria-label={language === "id" ? "Logo mitra Treffix" : "Treffix client logos"}
-                  aria-roledescription="marquee"
-                  className="relative h-[76px] overflow-hidden md:hidden"
-                >
-                  <div className="partner-marquee-track flex w-max items-center">
-                    {[0, 1].map((copyIndex) => (
-                      <ul
-                        key={copyIndex}
-                        aria-hidden={copyIndex === 1 ? true : undefined}
-                        className="flex shrink-0 items-center gap-6 px-3"
-                      >
-                        {partnerWordmarks.map((partner) => (
-                          <li key={`${copyIndex}-${partner.id}`} className="flex h-14 w-32 shrink-0 items-center justify-center">
-                            <img
-                              src={partner.logoSrc}
-                              alt={partner.name}
-                              decoding="async"
-                              className="max-h-10 max-w-[112px] object-contain"
-                            />
-                          </li>
-                        ))}
-                      </ul>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div className="relative hidden h-[112px] overflow-hidden md:block lg:h-14">
-                <AnimatePresence initial={false} mode="sync">
-                  <motion.ul
-                    key={partnerBatchIndex}
-                    aria-label={language === "id" ? "Logo mitra Treffix" : "Treffix client logos"}
-                    className={`absolute inset-0 grid grid-cols-2 items-center justify-items-center gap-x-3 gap-y-3 sm:gap-x-5 sm:gap-y-3 lg:gap-8 ${currentBatchSize < partnersPerBatch ? "sm:grid-cols-4 lg:grid-cols-4" : "sm:grid-cols-3 lg:grid-cols-5"}`}
-                    initial={reduceMotion ? false : isMobile ? { y: "10%", opacity: 1 } : { y: "100%", opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={reduceMotion ? undefined : { y: isMobile ? "-10%" : "-100%", opacity: isMobile ? 1 : 0 }}
-                    transition={{ duration: reduceMotion ? 0 : isMobile ? 0.24 : 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {partnerWordmarks
-                      .slice(partnerBatchIndex * partnersPerBatch, (partnerBatchIndex + 1) * partnersPerBatch)
-                      .map((partner) => {
-                        return (
-                          <li key={partner.id} className="flex min-h-10 w-full items-center justify-center sm:min-h-12">
-                            <img
-                              src={partner.logoSrc}
-                              alt={partner.name}
-                              decoding="async"
-                              className="max-h-10 max-w-[160px] object-contain sm:max-h-12 sm:max-w-[200px]"
-                            />
-                          </li>
-                        );
-                      })}
-                  </motion.ul>
-                </AnimatePresence>
-              </div>
+              <PartnerLogoStrip logos={partnerWordmarks} language={language} active={partnerAreaReady} />
             </motion.div>
           </div>
         </div>

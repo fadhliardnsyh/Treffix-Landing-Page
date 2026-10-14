@@ -44,7 +44,7 @@ export default async function BlogIndexPage({
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[84px] bg-[#030a14]" />
 
       <section className="container-wide pb-14 pt-28 sm:pb-20 sm:pt-32 lg:pb-24">
-        <p className="mb-5 text-[10px] font-bold uppercase tracking-[.17em] text-blue-600">
+        <p className="section-eyebrow mb-5 text-[10px] font-bold uppercase tracking-[.17em]">
           {content.nav[3]}
         </p>
         <h1 className="max-w-[1080px] text-[clamp(2.5rem,6vw,5.25rem)] font-semibold leading-[1.02] tracking-[-.055em] text-[#0a1c37]">

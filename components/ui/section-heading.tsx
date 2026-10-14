@@ -23,9 +23,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <div className={className}>
-      <p
-        className={`mb-5 flex items-center gap-3 text-[10px] font-bold tracking-[.17em] ${dark ? "text-blue-300" : "text-blue-600"} ${eyebrowClassName}`}
-      >
+      <p className={`mb-5 flex items-center gap-3 text-[10px] font-bold tracking-[.17em] text-[var(--blue)] ${eyebrowClassName}`}>
         {showEyebrowLine && <span className={`h-px w-7 ${dark ? "bg-blue-400" : "bg-blue-500"}`} />}
         {eyebrow}
       </p>
@@ -37,7 +35,7 @@ export function SectionHeading({
         </h2>
       )}
       {description && (
-        <p className={`mt-5 max-w-[600px] text-[14px] leading-7 ${dark ? "text-blue-50/70" : "text-slate-500"}`}>
+        <p className={`mt-5 max-w-[600px] text-[14px] leading-7 ${dark ? "text-white/70" : "text-slate-500"}`}>
           {description}
         </p>
       )}

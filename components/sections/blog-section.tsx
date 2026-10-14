@@ -18,12 +18,12 @@ type CarouselLayout = {
 const initialLayout: CarouselLayout = { pinned: false, distance: 0, sectionHeight: 0 };
 
 const featuredArticles = articles.slice(0, 4);
-// Card photos: Unsplash images by Ben Grayland, Juan Pablo, Vitaly Gariev, and Rodrigo Rodrigues.
+// Photo source and license details are documented in public/PHOTO_ATTRIBUTION.md.
 const articleImages: Record<string, string> = {
-  "pelacakan-armada-dan-perjalanan-kendaraan": "/article-fleet-road.jpg",
-  "cctv-ai-untuk-pemantauan-operasional": "/article-cctv-workplace.jpg",
+  "pelacakan-armada-dan-perjalanan-kendaraan": "/article-fleet-road.webp",
+  "cctv-ai-untuk-pemantauan-operasional": "/article-cctv-workplace.webp",
   "hrms-absensi-rekrutmen-payroll": "/article-hr-workforce.jpg",
-  "notifikasi-real-time-dan-pemutaran-ulang-armada": "/article-operations-data.jpg",
+  "notifikasi-real-time-dan-pemutaran-ulang-armada": "/article-operations-data.webp",
 };
 
 export function BlogSection({ content, language }: { content: Copy; language: Lang }) {
@@ -143,7 +143,7 @@ export function BlogSection({ content, language }: { content: Copy; language: La
                 description={content.blogText}
                 dark
                 showEyebrowLine={false}
-                eyebrowClassName="!text-[var(--blue)] uppercase"
+                eyebrowClassName="uppercase"
                 className="max-w-[900px] [&>h2]:max-w-[900px] [&>h2]:text-[clamp(2.35rem,4.2vw,3.75rem)] [&>h2]:leading-[1.07]"
               />
             </motion.div>
@@ -153,7 +153,7 @@ export function BlogSection({ content, language }: { content: Copy; language: La
               transition={{ duration: reduceMotion ? 0 : 0.32, delay: reduceMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
               className="mb-1 w-fit shrink-0"
             >
-              <Link href={`/${language}/blog`} className="inline-flex min-h-11 w-fit items-center gap-3 rounded-full border border-white/30 px-5 text-[11px] font-medium text-white/85 transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-500">
+              <Link href={`/${language}/blog`} className="inline-flex min-h-11 w-fit items-center gap-3 rounded-full border border-white/30 px-5 text-[11px] font-medium text-white/85 transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--blue)]">
                 {content.blogViewAll}
                 <ArrowRight size={14} aria-hidden="true" />
               </Link>
@@ -167,7 +167,7 @@ export function BlogSection({ content, language }: { content: Copy; language: La
             aria-describedby="blog-carousel-instructions"
             tabIndex={0}
             onKeyDown={handleCarouselKeyDown}
-            className={`mt-8 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500 sm:mt-10 ${layout.pinned ? "overflow-hidden" : "overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-3"}`}
+            className={`mt-8 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)] sm:mt-10 ${layout.pinned ? "overflow-hidden" : "overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-3"}`}
           >
             <p id="blog-carousel-instructions" className="sr-only">
               {language === "id"
@@ -185,12 +185,12 @@ export function BlogSection({ content, language }: { content: Copy; language: La
                   initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                   animate={reduceMotion || sectionEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
                   transition={{ duration: reduceMotion ? 0 : 0.42, delay: reduceMotion ? 0 : 0.42 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative h-[430px] w-[clamp(278px,25vw,320px)] flex-none snap-start overflow-hidden rounded-2xl bg-[#06152a] shadow-[0_16px_40px_rgba(8,31,65,.12)] sm:h-[440px]"
+                  className="relative h-[430px] w-[clamp(278px,25vw,320px)] flex-none snap-start overflow-hidden rounded-2xl bg-[#06152a] shadow-[0_16px_40px_color-mix(in_srgb,var(--blue)_12%,transparent)] sm:h-[440px]"
                 >
                   <Link
                     href={articleHref(language, article.slug)}
                     onFocus={handleCardFocus}
-                  className="group absolute inset-0 flex flex-col justify-end focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-blue-300"
+                  className="group absolute inset-0 flex flex-col justify-end focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-[var(--blue)]"
                   >
                     <Image
                       src={articleImages[article.slug]}
@@ -200,7 +200,7 @@ export function BlogSection({ content, language }: { content: Copy; language: La
                       className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                     <div className="relative z-10 p-5 sm:p-6">
-                      <span className="inline-flex rounded-full border border-white/20 bg-[#06152a]/45 px-3 py-1.5 text-[9px] font-bold tracking-[.15em] text-blue-100 backdrop-blur-sm">
+                      <span className="inline-flex rounded-full border border-white/20 bg-[#06152a]/45 px-3 py-1.5 text-[9px] font-bold tracking-[.15em] text-[var(--blue)] backdrop-blur-sm">
                         {article.category[language].toUpperCase()}
                       </span>
                       <h3 className="mt-4 line-clamp-2 text-[20px] font-semibold leading-[1.22] tracking-[-.03em] text-white sm:text-[21px]">

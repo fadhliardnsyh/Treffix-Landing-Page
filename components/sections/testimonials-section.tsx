@@ -58,10 +58,10 @@ export function TestimonialsSection({
       aria-labelledby="testimonials-heading"
       className="relative isolate overflow-hidden bg-[#111214] text-white"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,.08),transparent_52%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--blue)_8%,transparent),transparent_52%)]" />
       <div className="container-wide relative mx-auto grid grid-cols-2 items-start gap-3 py-20 sm:gap-4 sm:py-24 md:grid-cols-3 xl:min-h-[940px] xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(380px,2.15fr)_minmax(0,1fr)_minmax(0,1fr)] xl:gap-4 xl:py-24">
         <div className="relative z-10 order-1 col-span-2 mx-auto flex max-w-[650px] flex-col items-center justify-center py-5 text-center md:col-span-3 xl:order-3 xl:col-span-1 xl:min-h-[760px] xl:py-0">
-          <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-blue-300 sm:text-[11px]">
+          <p className="section-eyebrow text-[10px] font-semibold uppercase tracking-[.2em] sm:text-[11px]">
             {content.testimonialsEyebrow}
           </p>
           <h2
@@ -154,7 +154,7 @@ function TestimonialCard({
       }}
       animate={{ opacity: subdued ? 0.48 : 1, scale: subdued ? 0.975 : 1 }}
       transition={{ duration: reducedMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative block w-full min-h-[244px] ${height} rounded-[20px] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-400`}
+      className={`group relative block w-full min-h-[244px] ${height} rounded-[20px] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]`}
       style={{ perspective: 1000, transformStyle: "preserve-3d" }}
     >
       <motion.span
@@ -172,7 +172,7 @@ function TestimonialCard({
             {company}
           </span>
           <span className="mt-auto flex flex-col items-center text-center">
-            <span aria-hidden="true" className="grid h-10 w-10 place-items-center rounded-full border border-blue-300/15 bg-blue-400/[.08] text-blue-200/70">
+            <span aria-hidden="true" className="grid h-10 w-10 place-items-center rounded-full border border-[var(--blue)]/15 bg-[var(--blue)]/[.08] text-[var(--blue)]">
               <UserRound size={19} strokeWidth={1.5} />
             </span>
             <span className="mt-2 block max-w-full text-[10px] font-semibold leading-4 text-white/85 [text-wrap:balance]">{content.testimonialsReviewerPlaceholder}</span>
@@ -180,9 +180,9 @@ function TestimonialCard({
           </span>
         </span>
 
-        <span aria-hidden={!flipped} className="absolute inset-0 flex flex-col overflow-hidden rounded-[20px] border border-blue-200/50 bg-[#f4f6fb] p-4 text-[#172033] shadow-[0_20px_50px_rgba(0,0,0,.45)] [backface-visibility:hidden] [transform:rotateY(180deg)] sm:p-5">
+        <span aria-hidden={!flipped} className="absolute inset-0 flex flex-col overflow-hidden rounded-[20px] border border-[var(--blue)]/25 bg-[#f4f6fb] p-4 text-[#172033] shadow-[0_20px_50px_rgba(0,0,0,.45)] [backface-visibility:hidden] [transform:rotateY(180deg)] sm:p-5">
           <span className="flex flex-col items-center gap-1">
-            <span className="flex gap-0.5 text-blue-600" aria-hidden="true">
+            <span className="flex gap-0.5 text-[var(--blue)]" aria-hidden="true">
               {Array.from({ length: 5 }, (_, index) => <Star key={index} size={12} fill="currentColor" strokeWidth={1.4} />)}
             </span>
             <span className="text-[8px] font-semibold uppercase tracking-[.1em] text-slate-500">{content.testimonialsSampleRating}</span>

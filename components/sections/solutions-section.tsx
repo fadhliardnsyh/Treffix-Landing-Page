@@ -12,14 +12,29 @@ type Product = (typeof products)[number];
 const PRODUCT_IMAGE_SCALE = { inactive: 1, active: 1.08 };
 const PRODUCT_IMAGE_TRANSITION = { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const };
 
+export type SolutionsSectionOverride = {
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  products?: Partial<Record<Product["id"], {
+    category?: string;
+    title?: string;
+    description?: string;
+    points?: readonly string[];
+  }>>;
+};
+
 export function SolutionsSection({
   content,
   language,
   contactLink,
+  override,
 }: {
   content: Copy;
   language: Lang;
   contactLink?: string;
+  override?: SolutionsSectionOverride;
 }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const pendingProductIndexRef = useRef<number | null>(null);
@@ -40,17 +55,19 @@ export function SolutionsSection({
     FixSight: content.fixSightSectionEyebrow,
   };
   const activeProduct = products.find((product) => product.id === activeProductId) ?? products[0];
+  const activeProductOverride = override?.products?.[activeProduct.id];
   const productCtas: Record<Product["id"], { primary: string; secondary: string }> = {
     FixTrack: { primary: content.fixTrackPrimaryCta, secondary: content.fixTrackSecondaryCta },
     FixWork: { primary: content.fixWorkPrimaryCta, secondary: content.fixWorkSecondaryCta },
     FixSight: { primary: content.fixSightPrimaryCta, secondary: content.fixSightSecondaryCta },
   };
   const activeCtas = productCtas[activeProduct.id];
-  const solutionsTitleLabel = content.solutionsTitle;
+  const solutionsTitle = override?.title ?? content.solutionsTitle;
+  const solutionsTitleLabel = solutionsTitle;
   const emphasizedTitlePhrase = language === "en"
     ? "More Efficient and Connected"
     : "Lebih Efisien dan Terhubung";
-  const solutionsTitleParts = content.solutionsTitle.split(emphasizedTitlePhrase);
+  const solutionsTitleParts = solutionsTitle.split(emphasizedTitlePhrase);
 
   useEffect(() => {
     if (!showcaseEntered || entranceSequenceComplete) return;
@@ -138,7 +155,7 @@ export function SolutionsSection({
   return (
     <section
       ref={sectionRef}
-      id="solutions"
+      id={override?.id ?? "solutions"}
       className="relative isolate min-h-[260svh] bg-[#111214] text-white sm:min-h-[300svh] lg:min-h-[340vh]"
     >
       <div className="container-wide sticky top-0 mx-auto flex min-h-svh flex-col justify-center pb-6 pt-[calc(68px+1rem)] sm:pb-8 sm:pt-[calc(68px+1.25rem)] lg:pb-12 lg:pt-[calc(68px+1.5rem)]">
@@ -148,17 +165,24 @@ export function SolutionsSection({
           transition={{ duration: prefersReducedMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
           className="grid w-full gap-3 sm:gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(260px,.8fr)] lg:items-end lg:gap-10"
         >
-          <h2 className="max-w-[760px] text-[clamp(1.6rem,3.2vw,3rem)] font-medium leading-[1.08] tracking-[-.05em]">
-            {solutionsTitleParts.length === 2 ? (
-              <>
-                {solutionsTitleParts[0]}
-                <span className="text-[var(--blue)]">{emphasizedTitlePhrase}</span>
-                {solutionsTitleParts[1]}
-              </>
-            ) : content.solutionsTitle}
-          </h2>
+          <div>
+            {override?.eyebrow && (
+              <p className="section-eyebrow mb-3 text-[10px] font-bold uppercase tracking-[.18em]">
+                {override.eyebrow}
+              </p>
+            )}
+            <h2 className="max-w-[760px] text-[clamp(1.6rem,3.2vw,3rem)] font-medium leading-[1.08] tracking-[-.05em]">
+              {solutionsTitleParts.length === 2 ? (
+                <>
+                  {solutionsTitleParts[0]}
+                  <span className="text-[var(--blue)]">{emphasizedTitlePhrase}</span>
+                  {solutionsTitleParts[1]}
+                </>
+              ) : solutionsTitle}
+            </h2>
+          </div>
           <p className="max-w-[480px] text-sm leading-6 text-white/60 sm:text-base sm:leading-7 lg:justify-self-end">
-            {content.solutionsText}
+            {override?.description ?? content.solutionsText}
           </p>
         </motion.header>
 
@@ -181,12 +205,12 @@ export function SolutionsSection({
                   {activeProduct.id}
                 </h3>
                 <p className="mt-4 max-w-[520px] text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
-                  {activeProduct.desc[language]}
+                  {activeProductOverride?.description ?? activeProduct.desc[language]}
                 </p>
                 <ul className="mt-6 grid grid-cols-1 gap-3 sm:mt-7">
-                  {activeProduct.points[language].map((point) => (
+                  {(activeProductOverride?.points ?? activeProduct.points[language]).map((point) => (
                     <li key={point} className="flex items-start gap-3 text-sm leading-6 text-white/80 sm:text-[15px]">
-                      <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-blue-300/25 bg-blue-400/10 text-blue-300">
+                      <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[var(--blue)]/25 bg-[var(--blue)]/10 text-[var(--blue)]">
                         <Check size={13} strokeWidth={2.5} aria-hidden="true" />
                       </span>
                       <span>{point}</span>
@@ -234,7 +258,8 @@ export function SolutionsSection({
                 <ProductAccordionCard
                   key={product.id}
                   product={product}
-                  category={productDescriptions[product.id]}
+                  category={override?.products?.[product.id]?.category ?? productDescriptions[product.id]}
+                  cardTitle={override?.products?.[product.id]?.title}
                   language={language}
                   active={activeProductId === product.id}
                   reducedMotion={prefersReducedMotion}
@@ -252,6 +277,7 @@ export function SolutionsSection({
 function ProductAccordionCard({
   product,
   category,
+  cardTitle,
   language,
   active,
   reducedMotion,
@@ -259,6 +285,7 @@ function ProductAccordionCard({
 }: {
   product: Product;
   category: string;
+  cardTitle?: string;
   language: Lang;
   active: boolean;
   reducedMotion: boolean;
@@ -312,7 +339,7 @@ function ProductAccordionCard({
     <motion.div
       role="group"
       aria-label={`${product.id} product card`}
-      className={`relative flex h-full min-h-0 min-w-11 shrink-0 overflow-hidden rounded-[18px] border text-left sm:min-w-[52px] lg:min-w-[58px] ${reducedMotion ? "" : "transition-[flex-basis,flex-grow,background-color,border-color] duration-700 ease-[cubic-bezier(.22,1,.36,1)]"} ${active ? "basis-0 grow" : "basis-11 grow-0 sm:basis-[52px] lg:basis-[72px]"} ${active ? "border-blue-400 bg-[#0b1a30]" : "border-white/10 bg-[#191b1f] hover:border-white/25 hover:bg-[#202329]"}`}
+      className={`relative flex h-full min-h-0 min-w-11 shrink-0 overflow-hidden rounded-[18px] border text-left sm:min-w-[52px] lg:min-w-[58px] ${reducedMotion ? "" : "transition-[flex-basis,flex-grow,background-color,border-color] duration-700 ease-[cubic-bezier(.22,1,.36,1)]"} ${active ? "basis-0 grow" : "basis-11 grow-0 sm:basis-[52px] lg:basis-[72px]"} ${active ? "border-[var(--blue)] bg-[var(--blue)]/[.12]" : "border-white/10 bg-[#191b1f] hover:border-white/25 hover:bg-[#202329]"}`}
       style={{ flexGrow: active ? 1 : 0, flexShrink: active ? 1 : 0 }}
     >
       <button
@@ -320,7 +347,7 @@ function ProductAccordionCard({
         aria-pressed={active}
         aria-label={`${product.id}: ${category}`}
         onClick={onSelect}
-        className={`absolute inset-0 z-[5] cursor-pointer rounded-[18px] focus-visible:outline-none ${active ? "" : "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-400"}`}
+        className={`absolute inset-0 z-[5] cursor-pointer rounded-[18px] focus-visible:outline-none ${active ? "" : "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--blue)]"}`}
       />
       <motion.div
         aria-hidden="true"
@@ -329,7 +356,7 @@ function ProductAccordionCard({
         transition={{ ...PRODUCT_IMAGE_TRANSITION, duration: reducedMotion ? 0 : PRODUCT_IMAGE_TRANSITION.duration }}
         style={{ transformOrigin: "center center" }}
       >
-        <ProductVisual product={product} />
+        <ProductVisual product={product} language={language} />
       </motion.div>
       <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/35" animate={{ opacity: active ? 0 : 1 }} transition={{ duration: reducedMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }} />
       <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" animate={{ opacity: active ? 1 : 0 }} transition={{ duration: reducedMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }} />
@@ -348,7 +375,7 @@ function ProductAccordionCard({
           initial={reducedMotion || active ? false : { opacity: 0, y: 8 }}
           animate={eyebrowVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
           transition={{ duration: reducedMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
-          className={`max-w-[520px] text-[9px] font-bold tracking-[.16em] text-[var(--blue)] sm:text-[10px] ${product.id === "FixWork" ? "uppercase" : ""}`}
+          className={`section-eyebrow max-w-[520px] text-[9px] font-bold tracking-[.16em] sm:text-[10px] ${product.id === "FixWork" ? "uppercase" : ""}`}
         >
           {category}
         </motion.p>
@@ -359,9 +386,13 @@ function ProductAccordionCard({
           transition={{ duration: reducedMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
           className="pointer-events-none mt-2 max-w-[520px] text-[clamp(1.1rem,2.2vw,1.65rem)] font-semibold leading-[1.12] tracking-[-.03em] text-white [text-wrap:balance]"
         >
-          {product.title[language].before}
-          <span>{product.title[language].highlight}</span>
-          {product.title[language].after}
+          {cardTitle ?? (
+            <>
+              {product.title[language].before}
+              <span>{product.title[language].highlight}</span>
+              {product.title[language].after}
+            </>
+          )}
         </motion.h3>
       </div>
       <motion.span
@@ -379,20 +410,40 @@ function ProductAccordionCard({
 }
 
 const productVisuals: Record<Product["id"], string> = {
-  FixTrack: "/fixtrack-fleet-intelligence.webp",
-  FixWork: "/fixwork-workforce.webp",
-  FixSight: "/fixsight-cctv.webp",
+  FixTrack: "/solutions-photos/fixtrack-highway-fleet.webp",
+  FixWork: "/solutions-photos/fixwork-team-collaboration.webp",
+  FixSight: "/solutions-photos/fixsight-warehouse-ppe-detection.webp",
 };
 
-function ProductVisual({ product }: { product: Product }) {
+function ProductVisual({ product, language }: { product: Product; language: Lang }) {
+  const imageAlt: Record<Product["id"], { en: string; id: string }> = {
+    FixTrack: {
+      en: "Freight truck traveling on a highway",
+      id: "Truk kargo melaju di jalan raya",
+    },
+    FixWork: {
+      en: "Colleagues collaborating around a laptop in an office",
+      id: "Rekan kerja berkolaborasi di sekitar laptop di kantor",
+    },
+    FixSight: {
+        en: "Fixed high-angle CCTV view of three warehouse workers wearing hard hats and high-visibility vests, with AI safety detection labels",
+        id: "Tampilan CCTV sudut tinggi dari tiga pekerja gudang dengan helm dan rompi keselamatan, dilengkapi label deteksi keselamatan AI",
+    },
+  };
+  const imagePosition: Record<Product["id"], string> = {
+    FixTrack: "69% 50%",
+    FixWork: "50% 52%",
+    FixSight: "60% 50%",
+  };
+
   return (
     <Image
       src={productVisuals[product.id]}
-      alt=""
+      alt={imageAlt[product.id][language]}
       fill
       sizes="(min-width: 1024px) 65vw, 100vw"
       className="object-cover object-center"
-      style={{ objectFit: "cover", objectPosition: "50% 50%" }}
+      style={{ objectFit: "cover", objectPosition: imagePosition[product.id] }}
       priority={product.id === "FixTrack"}
     />
   );
@@ -406,5 +457,5 @@ function ProductMark({ product }: { product: Product }) {
     return <Image src="/fixwork-blue.svg" alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />;
   }
   // Temporary product-mark placeholder until the official FixSight logo is available.
-  return <Camera aria-hidden="true" className="h-5 w-5 text-blue-600" strokeWidth={1.8} />;
+  return <Camera aria-hidden="true" className="h-5 w-5 text-[var(--blue)]" strokeWidth={1.8} />;
 }

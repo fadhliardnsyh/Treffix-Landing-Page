@@ -256,7 +256,7 @@ export function PlatformSection({ content, language }: { content: Copy; language
                 exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
                 transition={{ duration: reduceMotion ? 0 : 0.24 }}
               >
-                <p className="text-[10px] font-bold tracking-[.16em] text-[var(--blue)]">{steps[activeStep].label}</p>
+                <p className="section-eyebrow mb-2 text-[10px] font-bold tracking-[.16em]">{steps[activeStep].label}</p>
                 <h3 className="mt-2 text-xl font-semibold tracking-[-.025em] text-white sm:text-2xl">{steps[activeStep].title}</h3>
                 <p className="mt-2 max-w-[540px] text-[13px] leading-6 text-white/70">{steps[activeStep].body}</p>
               </motion.div>

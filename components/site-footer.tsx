@@ -94,7 +94,7 @@ export function SiteFooter({
                   <ul className="flex items-center gap-2">
                     {socialItems.map(({ label, href, icon }) => (
                       <li key={label}>
-                        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 ${icon === "linkedin" ? "bg-white/[.05] text-blue-400 hover:bg-[var(--blue)] hover:text-white" : "bg-white/[.06] text-blue-400 hover:bg-white/[.1] hover:text-blue-300"}`}>
+                        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] ${icon === "linkedin" ? "bg-white/[.05] text-[var(--blue)] hover:bg-[var(--blue)] hover:text-black" : "bg-white/[.06] text-[var(--blue)] hover:bg-white/[.1] hover:text-[var(--blue)]"}`}>
                           {icon === "instagram" ? <InstagramIcon /> : <LinkedInIcon />}
                         </a>
                       </li>
@@ -149,19 +149,19 @@ export function SiteFooter({
               <div className="space-y-3 text-[12px] leading-5 text-white/75">
                 {contactDetails?.address && (
                   <p className="flex items-start gap-3">
-                    <MapPin size={17} className="mt-0.5 shrink-0 text-blue-400" aria-hidden="true" />
+                    <MapPin size={17} className="mt-0.5 shrink-0 text-[var(--blue)]" aria-hidden="true" />
                     <span><span className="sr-only">{content.footerAddress}: </span>{contactDetails.address}</span>
                   </p>
                 )}
                 {phoneDigits && (
                   <a href={`https://wa.me/${phoneDigits}`} target="_blank" rel="noopener noreferrer" aria-label={`${content.footerPhone}: ${contactDetails?.phone}`} className="flex min-h-10 items-center gap-3 transition-colors hover:text-white focus-visible:text-white">
-                    <Phone size={17} className="shrink-0 text-blue-400" aria-hidden="true" />
+                    <Phone size={17} className="shrink-0 text-[var(--blue)]" aria-hidden="true" />
                     <span>{contactDetails?.phone}</span>
                   </a>
                 )}
                 {contactDetails?.email && (
                   <a href={`mailto:${contactDetails.email}`} aria-label={`${content.footerEmail}: ${contactDetails.email}`} className="flex min-h-10 items-center gap-3 transition-colors hover:text-white focus-visible:text-white">
-                    <Mail size={17} className="shrink-0 text-blue-400" aria-hidden="true" />
+                    <Mail size={17} className="shrink-0 text-[var(--blue)]" aria-hidden="true" />
                     <span>{contactDetails.email}</span>
                   </a>
                 )}

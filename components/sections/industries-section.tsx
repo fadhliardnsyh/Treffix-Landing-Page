@@ -46,19 +46,19 @@ function IndustryCard({
   const Icon = industry.icon;
 
   return (
-    <article className="group flex h-full min-h-[408px] flex-col rounded-[24px] border border-[#e2ebf8] bg-gradient-to-b from-[#f7faff] to-white p-6 shadow-[0_3px_14px_rgba(16,43,82,.025)] motion-safe:transition-[transform,border-color,box-shadow,background-color] motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[#cbdcf3] motion-safe:hover:shadow-[0_14px_34px_rgba(16,43,82,.09)] sm:p-7">
+    <article className="group flex h-full min-h-[408px] flex-col rounded-[24px] border border-[var(--blue)]/12 bg-gradient-to-b from-[var(--blue)]/[.035] to-white p-6 shadow-[0_3px_14px_color-mix(in_srgb,var(--blue)_2.5%,transparent)] motion-safe:transition-[transform,border-color,box-shadow,background-color] motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[var(--blue)]/35 motion-safe:hover:shadow-[0_14px_34px_color-mix(in_srgb,var(--blue)_9%,transparent)] sm:p-7">
       <div className="flex items-center justify-between">
         <span className="font-mono text-[11px] font-medium tracking-[.12em] text-slate-500">{industry.number}<span className="mx-2 text-slate-300">/</span>03</span>
-        <span className="grid h-12 w-12 place-items-center rounded-[15px] border border-blue-100 bg-white text-blue-600 shadow-[0_2px_7px_rgba(17,58,117,.06)] motion-safe:transition-[transform,box-shadow,border-color] motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:scale-105 motion-safe:group-hover:border-blue-200 motion-safe:group-hover:shadow-[0_7px_16px_rgba(37,99,235,.12)]"><Icon size={20} strokeWidth={1.8} aria-hidden="true" /></span>
+        <span className="grid h-12 w-12 place-items-center rounded-[15px] border border-[var(--blue)]/20 bg-white text-[var(--blue)] shadow-[0_2px_7px_color-mix(in_srgb,var(--blue)_6%,transparent)] motion-safe:transition-[transform,box-shadow,border-color] motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:scale-105 motion-safe:group-hover:border-[var(--blue)]/50 motion-safe:group-hover:shadow-[0_7px_16px_color-mix(in_srgb,var(--blue)_12%,transparent)]"><Icon size={20} strokeWidth={1.8} aria-hidden="true" /></span>
       </div>
       <div className="mt-7">
         <h3 className="min-h-[3.5rem] max-w-[300px] text-[21px] font-semibold leading-[1.28] tracking-[-.03em] text-[#071a35] sm:text-[22px]">{industry.name}</h3>
         <p className="mt-2 min-h-[4.75rem] max-w-[34ch] text-[14px] leading-[1.7] text-slate-600">{industry.description}</p>
         <ul className="mt-5 border-t border-[#dce6f3] pt-4">
-          {needs.map((need) => <li key={need} className="flex items-start gap-2.5 py-1.5 text-[13px] leading-5 text-slate-700"><Check size={15} className="mt-0.5 shrink-0 text-blue-600" strokeWidth={2.2} aria-hidden="true" />{need}</li>)}
+          {needs.map((need) => <li key={need} className="flex items-start gap-2.5 py-1.5 text-[13px] leading-5 text-slate-700"><Check size={15} className="mt-0.5 shrink-0 text-[var(--blue)]" strokeWidth={2.2} aria-hidden="true" />{need}</li>)}
         </ul>
       </div>
-      <ButtonLink href={contactLink || "#solutions"} variant="text" className="group/link mt-auto w-fit gap-2 rounded-md pt-3 text-[13px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500">
+      <ButtonLink href={contactLink || "#solutions"} variant="text" className="group/link mt-auto w-fit gap-2 rounded-md pt-3 text-[13px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]">
         {contactLink ? content.talk : content.explore}<ArrowRight size={15} className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover/link:translate-x-1" />
       </ButtonLink>
     </article>

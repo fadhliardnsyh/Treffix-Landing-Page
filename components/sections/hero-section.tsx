@@ -13,8 +13,7 @@ export function HeroSection({ content, language }: { content: Copy; language: La
       <div className="hero-content container-wide relative z-10 flex items-center justify-center text-center">
         <div className="relative mx-auto max-w-[860px]">
           <Reveal>
-            <div className="mb-7 inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-black/30 px-3.5 py-2 text-[9px] font-semibold tracking-[.17em] text-white/85 backdrop-blur-sm sm:text-[10px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
+            <div className="mb-7 flex items-center justify-center gap-2 text-[9px] font-semibold tracking-[.17em] text-[var(--blue)] sm:text-[10px]">
               {content.eyebrow}
             </div>
           </Reveal>

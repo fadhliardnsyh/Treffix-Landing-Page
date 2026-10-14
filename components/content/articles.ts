@@ -20,8 +20,8 @@ export type Article = {
 export const articles = [
   {
     slug: "pelacakan-armada-dan-perjalanan-kendaraan",
-    image: "/article-fleet-road.jpg",
-    imageAlt: { id: "Kendaraan armada melaju di jalan raya", en: "Fleet vehicles traveling on a road" },
+    image: "/article-fleet-road.webp",
+    imageAlt: { id: "Truk kargo melaju di jalan raya saat senja", en: "A cargo truck traveling along a highway at sunset" },
     publishedAt: null,
     relatedSlugs: ["notifikasi-real-time-dan-pemutaran-ulang-armada", "cctv-ai-untuk-pemantauan-operasional", "hrms-absensi-rekrutmen-payroll", "absensi-karyawan-dan-area-absensi"],
     icon: Route,
@@ -87,8 +87,8 @@ export const articles = [
   },
   {
     slug: "cctv-ai-untuk-pemantauan-operasional",
-    image: "/article-cctv-workplace.jpg",
-    imageAlt: { id: "CCTV memantau aktivitas di area kerja", en: "CCTV monitoring activity in a workplace" },
+    image: "/article-cctv-workplace.webp",
+    imageAlt: { id: "Petugas keamanan memantau beberapa layar pengawasan di ruang kontrol", en: "A security officer monitoring surveillance screens in a control room" },
     publishedAt: null,
     relatedSlugs: ["pelacakan-armada-dan-perjalanan-kendaraan", "hrms-absensi-rekrutmen-payroll", "notifikasi-real-time-dan-pemutaran-ulang-armada", "absensi-karyawan-dan-area-absensi"],
     icon: Camera,
@@ -221,8 +221,8 @@ export const articles = [
   },
   {
     slug: "notifikasi-real-time-dan-pemutaran-ulang-armada",
-    image: "/article-operations-data.jpg",
-    imageAlt: { id: "Data operasional ditinjau di dalam gudang", en: "Operational data being reviewed in a warehouse" },
+    image: "/article-operations-data.webp",
+    imageAlt: { id: "Petugas pengiriman memeriksa informasi pengiriman melalui ponsel di dalam kendaraan", en: "A delivery worker checking delivery details on a phone inside a vehicle" },
     publishedAt: null,
     relatedSlugs: ["pelacakan-armada-dan-perjalanan-kendaraan", "cctv-ai-untuk-pemantauan-operasional", "hrms-absensi-rekrutmen-payroll", "absensi-karyawan-dan-area-absensi"],
     icon: Route,
@@ -286,8 +286,8 @@ export const articles = [
   },
   {
     slug: "absensi-karyawan-dan-area-absensi",
-    image: "/article-hr-workforce.jpg",
-    imageAlt: { id: "Karyawan mengelola administrasi tenaga kerja", en: "An employee managing workforce administration" },
+    image: "/article-attendance-records.webp",
+    imageAlt: { id: "Seorang profesional meninjau dokumen kerja di meja kantor", en: "A professional reviewing work documents at an office desk" },
     publishedAt: null,
     relatedSlugs: ["hrms-absensi-rekrutmen-payroll", "cctv-ai-untuk-pemantauan-operasional", "pelacakan-armada-dan-perjalanan-kendaraan", "notifikasi-real-time-dan-pemutaran-ulang-armada"],
     icon: Users,

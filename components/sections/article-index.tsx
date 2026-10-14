@@ -58,10 +58,10 @@ export function ArticleIndex({ language, readLabel }: ArticleIndexProps) {
                   aria-pressed={selected}
                   aria-controls="article-grid"
                   onClick={() => selectCategory(key)}
-                  className={`flex min-h-11 shrink-0 items-center justify-between gap-5 rounded-xl border px-4 text-left text-[13px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 lg:w-full lg:border-transparent lg:px-3 ${selected ? "border-blue-100 bg-blue-50 text-blue-700 lg:border-blue-100" : "border-blue-100 bg-white text-slate-600 hover:border-blue-200 hover:bg-white hover:text-blue-700 lg:hover:bg-blue-50/70"}`}
+                  className={`flex min-h-11 shrink-0 items-center justify-between gap-5 rounded-xl border px-4 text-left text-[13px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] lg:w-full lg:border-transparent lg:px-3 ${selected ? "border-[var(--blue)]/25 bg-[var(--blue)]/8 text-[#071a35] lg:border-[var(--blue)]/25" : "border-slate-200 bg-white text-slate-600 hover:border-[var(--blue)]/35 hover:bg-[var(--blue)]/5 hover:text-[#071a35] lg:hover:bg-[var(--blue)]/5"}`}
                 >
                   <span className="whitespace-nowrap">{label}</span>
-                  <span className={`min-w-6 text-right text-[11px] tabular-nums ${selected ? "text-blue-600" : "text-slate-400"}`}>{count}</span>
+                  <span className={`min-w-6 text-right text-[11px] tabular-nums ${selected ? "text-[#071a35]" : "text-slate-400"}`}>{count}</span>
                 </button>
               );
             })}
@@ -82,7 +82,7 @@ export function ArticleIndex({ language, readLabel }: ArticleIndexProps) {
                 aria-label={language === "id" ? "Halaman sebelumnya" : "Previous page"}
                 disabled={page === 1}
                 onClick={() => setPage((current) => Math.max(1, current - 1))}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-blue-100 bg-white text-slate-600 transition hover:border-blue-300 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-[var(--blue)] hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowLeft size={16} aria-hidden="true" />
               </button>
@@ -93,7 +93,7 @@ export function ArticleIndex({ language, readLabel }: ArticleIndexProps) {
                   aria-label={language === "id" ? `Halaman ${pageNumber}` : `Page ${pageNumber}`}
                   aria-current={page === pageNumber ? "page" : undefined}
                   onClick={() => setPage(pageNumber)}
-                  className={`min-h-11 min-w-11 rounded-full border text-[13px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${page === pageNumber ? "border-blue-600 bg-blue-600 text-white" : "border-blue-100 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-700"}`}
+                className={`min-h-11 min-w-11 rounded-full border text-[13px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] ${page === pageNumber ? "border-[var(--blue)] bg-[var(--blue)] text-white" : "border-slate-200 bg-white text-slate-600 hover:border-[var(--blue)] hover:text-[#071a35]"}`}
                 >
                   {pageNumber}
                 </button>
@@ -103,7 +103,7 @@ export function ArticleIndex({ language, readLabel }: ArticleIndexProps) {
                 aria-label={language === "id" ? "Halaman berikutnya" : "Next page"}
                 disabled={page === pageCount}
                 onClick={() => setPage((current) => Math.min(pageCount, current + 1))}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-blue-100 bg-white text-slate-600 transition hover:border-blue-300 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-[var(--blue)] hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowRight size={16} aria-hidden="true" />
               </button>

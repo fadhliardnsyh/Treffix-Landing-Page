@@ -9,7 +9,7 @@ import { Reveal } from "@/components/ui/reveal";
 export function FaqSection({ content }: { content: Copy }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const reduceMotion = useReducedMotion();
-  const faqColumns = [content.faq.slice(0, 3), content.faq.slice(3, 6)];
+  const lastDesktopRowStart = Math.floor((content.faq.length - 1) / 2) * 2;
   const highlightedPhrase = content.faqTitle.startsWith("Find Out") ? "Find Out" : "Cari Tahu";
   const faqTitleParts = content.faqTitle.split(highlightedPhrase);
 
@@ -18,7 +18,7 @@ export function FaqSection({ content }: { content: Copy }) {
       <div className="container-wide mx-auto">
         <Reveal>
           <div className="mx-auto mb-10 max-w-[760px] text-center sm:mb-14">
-            <p className="mb-5 text-[10px] font-bold tracking-[.17em] text-blue-600">
+            <p className="section-eyebrow mb-5 text-[10px] font-bold tracking-[.17em]">
               {content.faqEyebrow}
             </p>
             <h2 className="text-[37px] font-semibold leading-[1.1] tracking-[-.045em] text-[#101828] sm:text-[48px]">
@@ -36,23 +36,17 @@ export function FaqSection({ content }: { content: Copy }) {
         </Reveal>
         <Reveal delay={0.08}>
           <div className="grid grid-cols-1 gap-x-12 lg:grid-cols-2 lg:gap-x-16">
-            {faqColumns.map((column, columnIndex) => (
-              <div key={columnIndex} className="divide-y divide-slate-200">
-                {column.map(([question, answer], itemIndex) => {
-                  const index = columnIndex * 3 + itemIndex;
-                  return (
-                    <FaqItem
-                      key={question}
-                      index={index}
-                      question={question}
-                      answer={answer}
-                      open={openIndex === index}
-                      reduceMotion={Boolean(reduceMotion)}
-                      onToggle={() => setOpenIndex((current) => current === index ? null : index)}
-                    />
-                  );
-                })}
-              </div>
+            {content.faq.map(([question, answer], index) => (
+              <FaqItem
+                key={question}
+                index={index}
+                question={question}
+                answer={answer}
+                open={openIndex === index}
+                reduceMotion={Boolean(reduceMotion)}
+                onToggle={() => setOpenIndex((current) => current === index ? null : index)}
+                className={index >= lastDesktopRowStart ? "lg:border-b-0" : ""}
+              />
             ))}
           </div>
         </Reveal>
@@ -68,6 +62,7 @@ function FaqItem({
   open,
   reduceMotion,
   onToggle,
+  className,
 }: {
   index: number;
   question: string;
@@ -75,12 +70,13 @@ function FaqItem({
   open: boolean;
   reduceMotion: boolean;
   onToggle: () => void;
+  className?: string;
 }) {
   const triggerId = `faq-question-${index + 1}`;
   const answerId = `faq-answer-${index + 1}`;
 
   return (
-    <div className="py-1">
+    <div className={`border-b border-slate-200 py-1 last:border-b-0 ${className ?? ""}`}>
       <button
         id={triggerId}
         type="button"
@@ -90,7 +86,7 @@ function FaqItem({
         aria-controls={answerId}
       >
         <span className="text-[15px] font-medium leading-6 text-[#101828] sm:text-base sm:leading-7">{question}</span>
-        <ChevronDown size={16} className={`shrink-0 text-slate-500 transition-transform duration-200 ease-out ${open ? "rotate-180 text-blue-600" : ""}`} aria-hidden="true" />
+        <ChevronDown size={16} className={`shrink-0 text-slate-500 transition-transform duration-200 ease-out ${open ? "rotate-180 text-[var(--blue)]" : ""}`} aria-hidden="true" />
       </button>
       <motion.div
         id={answerId}

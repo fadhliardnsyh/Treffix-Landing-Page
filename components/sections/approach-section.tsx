@@ -39,7 +39,7 @@ function ApproachProgressRail({
       <span aria-hidden="true" className="absolute left-[12.5%] right-[12.5%] top-1/2 h-px -translate-y-1/2 bg-slate-200" />
       <motion.span
         aria-hidden="true"
-        className="absolute left-[12.5%] top-[11.5px] h-px w-3/4 origin-left bg-blue-600"
+        className="absolute left-[12.5%] top-[11.5px] h-px w-3/4 origin-left bg-[var(--blue)]"
         style={{ scaleX: fillProgress }}
       />
       <ol aria-label={label} className="relative grid grid-cols-4 items-center">
@@ -47,14 +47,14 @@ function ApproachProgressRail({
           const completed = index < activeStep;
           const current = index === activeStep;
           const tone = completed || current
-            ? "border-blue-600 bg-blue-600 text-white"
+            ? "border-[var(--blue)] bg-[var(--blue)] text-white"
             : "border-slate-300 bg-white text-slate-400";
 
           return (
             <li key={step.title} aria-current={current ? "step" : undefined} className="relative z-10 flex justify-center">
               <span
                 aria-hidden="true"
-                className={`flex h-6 w-6 items-center justify-center rounded-full border text-[10px] font-semibold tabular-nums transition-[background-color,border-color,color,box-shadow] duration-200 ${tone} ${current ? "shadow-[0_0_0_4px_rgba(37,99,235,.1),0_0_14px_rgba(37,99,235,.2)]" : ""}`}
+                className={`flex h-6 w-6 items-center justify-center rounded-full border text-[10px] font-semibold tabular-nums transition-[background-color,border-color,color,box-shadow] duration-200 ${tone} ${current ? "shadow-[0_0_0_4px_color-mix(in_srgb,var(--blue)_10%,transparent),0_0_14px_color-mix(in_srgb,var(--blue)_20%,transparent)]" : ""}`}
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
@@ -124,7 +124,7 @@ function ApproachScene({
         <>
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[min(68vw,620px)] w-[min(68vw,620px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,.09)_0%,rgba(37,99,235,.035)_42%,transparent_72%)] blur-2xl sm:h-[min(54vw,680px)] sm:w-[min(54vw,680px)]"
+            className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[min(68vw,620px)] w-[min(68vw,620px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--blue)_9%,transparent)_0%,color-mix(in_srgb,var(--blue)_3.5%,transparent)_42%,transparent_72%)] blur-2xl sm:h-[min(54vw,680px)] sm:w-[min(54vw,680px)]"
           />
           <span
             aria-hidden="true"
@@ -149,7 +149,7 @@ function ApproachScene({
           </>
         ) : (
           <>
-            <p className="mb-5 text-[11px] font-bold uppercase tracking-[.18em] text-blue-700 sm:text-xs">
+            <p className="section-eyebrow mb-5 text-[11px] font-bold uppercase tracking-[.18em] sm:text-xs">
               {introEyebrow}
             </p>
             <h2 id="approach-heading" className="mx-auto max-w-[760px] text-[clamp(2.2rem,8vw,4.5rem)] font-semibold leading-[1.02] tracking-[-.055em] text-[#101828] [text-wrap:balance] sm:text-[clamp(2.5rem,5vw,5rem)]">
@@ -213,7 +213,7 @@ export function ApproachSection({ content }: { content: Copy }) {
       className="relative isolate bg-white text-[#101828]"
       style={{
         height: `calc(100svh + ${pinnedScrollVh}svh)`,
-        backgroundImage: "linear-gradient(180deg, #050a12 0px, #edf4ff 48px, #ffffff 112px)",
+        backgroundImage: "linear-gradient(180deg, #050a12 0px, color-mix(in srgb, var(--blue) 5%, transparent) 48px, #ffffff 112px)",
       }}
     >
       <div className="sticky top-0 h-svh overflow-hidden">

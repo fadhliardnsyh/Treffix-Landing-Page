@@ -14,8 +14,8 @@ import { TREFFIX_WHATSAPP_PHONE } from "@/components/site-contact";
 
 const navIds = ["solutions", "industries", "about", "blog"];
 const megaMenuPanelClass = "flex min-h-[380px] flex-col justify-between gap-6 rounded-2xl border border-white/12 bg-black/75 p-4 shadow-[0_24px_70px_rgba(0,0,0,.42)] ring-1 ring-white/[.04] backdrop-blur-sm";
-const megaMenuDesktopItemClass = "group flex min-h-[88px] w-full items-start gap-3 rounded-xl border border-transparent p-3 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]";
-const megaMenuMobileItemClass = "group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]";
+const megaMenuDesktopItemClass = "group flex min-h-[88px] w-full items-start gap-3 rounded-xl border border-transparent p-3 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-[var(--blue)]/10 focus-visible:border-[var(--blue)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]";
+const megaMenuMobileItemClass = "group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-[var(--blue)]/10 focus-visible:border-[var(--blue)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]";
 
 export function SiteHeader({
   language,
@@ -211,7 +211,7 @@ export function SiteHeader({
                 aria-expanded={solutionsOpen}
                 aria-controls="solutions-mega-menu"
                 onClick={(event) => setSolutionsOpen(event.detail === 0 ? (open) => !open : true)}
-                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"
               >
                 {item}
                 <ChevronDown size={13} aria-hidden="true" className={`transition-transform duration-200 ${solutionsOpen ? "rotate-180" : ""}`} />
@@ -255,7 +255,7 @@ export function SiteHeader({
                               <span className="block text-[13px] font-semibold text-white/90">{name}</span>
                               <span className="mt-1 block text-[11px] leading-[1.55] text-white/55">{category}</span>
                               <span className="mt-1 block text-[11px] leading-[1.55] text-white/55">{description}</span>
-                              <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold leading-[1.55] text-[var(--blue)] transition-colors group-hover:text-blue-300 group-hover:underline group-focus-visible:text-blue-300 group-focus-visible:underline">
+                              <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold leading-[1.55] text-[var(--blue)] transition-colors group-hover:text-[var(--blue)] group-hover:underline group-focus-visible:text-[var(--blue)] group-focus-visible:underline">
                                 {link}
                                 <ArrowUpRight size={12} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5" />
                               </span>
@@ -268,7 +268,7 @@ export function SiteHeader({
                         <a
                           href={sectionHref("solutions")}
                           onClick={() => setSolutionsOpen(false)}
-                          className="group inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-[11px] font-semibold text-blue-200 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+                          className="group inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-[11px] font-semibold text-[var(--blue)] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"
                         >
                           {solutionsMenuText.all}
                           <ArrowRight size={14} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5" />
@@ -298,7 +298,7 @@ export function SiteHeader({
                 aria-expanded={customersOpen}
                 aria-controls="customers-mega-menu"
                 onClick={(event) => setCustomersOpen(event.detail === 0 ? (open) => !open : true)}
-                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"
               >
                 {item}
                 <ChevronDown size={13} aria-hidden="true" className={`transition-transform duration-200 ${customersOpen ? "rotate-180" : ""}`} />
@@ -367,7 +367,7 @@ export function SiteHeader({
                 aria-expanded={companyOpen}
                 aria-controls="company-menu"
                 onClick={(event) => setCompanyOpen(event.detail === 0 ? (open) => !open : true)}
-                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+                className="flex min-h-9 items-center gap-1 rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"
               >
                 {item}
                 <ChevronDown size={13} aria-hidden="true" className={`transition-transform duration-200 ${companyOpen ? "rotate-180" : ""}`} />
@@ -412,7 +412,7 @@ export function SiteHeader({
             <Link
               key={item}
               aria-current={activeNav === "blog" ? "page" : undefined}
-              className={activeNav === "blog" ? "flex min-h-9 items-center rounded-full bg-[#0b75ff]/15 px-3 text-[13px] font-semibold text-[#0b75ff] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]" : "flex min-h-9 items-center rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"}
+              className={activeNav === "blog" ? "flex min-h-9 items-center rounded-full bg-[var(--blue)]/15 px-3 text-[13px] font-semibold text-[var(--blue)] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]" : "flex min-h-9 items-center rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"}
               href={`/${language}/blog`}
             >
               {item}
@@ -420,7 +420,7 @@ export function SiteHeader({
           ) : (
             <a
               key={item}
-              className="flex min-h-9 items-center rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff]"
+              className="flex min-h-9 items-center rounded-full px-3 text-[13px] text-white/70 transition-colors duration-200 hover:bg-white/[.08] hover:text-white active:bg-white/[.14] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"
               href={sectionHref(navIds[index])}
             >
               {item}
@@ -471,7 +471,7 @@ export function SiteHeader({
                     type="button"
                     aria-expanded={mobileSolutionsOpen}
                     onClick={() => { setMobileCustomersOpen(false); setMobileCompanyOpen(false); setMobileSolutionsOpen((open) => !open); }}
-                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]"
                   >
                     {item}
                     <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-200 ${mobileSolutionsOpen ? "rotate-180" : ""}`} />
@@ -491,7 +491,7 @@ export function SiteHeader({
                             key={name}
                             href={sectionHref("solutions")}
                             onClick={() => { setMenuOpen(false); setMobileSolutionsOpen(false); }}
-                            className="group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-blue-400/10 focus-visible:border-blue-300/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                            className="group flex min-h-[60px] w-full items-center gap-3 rounded-xl border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[.06] active:bg-[var(--blue)]/10 focus-visible:border-[var(--blue)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]"
                           >
                             <span className="mega-menu-icon-container grid h-9 w-9 shrink-0 place-items-center rounded-xl">
                               {logo ? (
@@ -518,7 +518,7 @@ export function SiteHeader({
                     aria-expanded={mobileCustomersOpen}
                     aria-controls="mobile-customer-menu"
                     onClick={() => { setMobileSolutionsOpen(false); setMobileCompanyOpen(false); setMobileCustomersOpen((open) => !open); }}
-                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]"
                   >
                     {item}
                     <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-200 ${mobileCustomersOpen ? "rotate-180" : ""}`} />
@@ -571,7 +571,7 @@ export function SiteHeader({
                     aria-expanded={mobileCompanyOpen}
                     aria-controls="mobile-company-menu"
                     onClick={() => { setMobileSolutionsOpen(false); setMobileCustomersOpen(false); setMobileCompanyOpen((open) => !open); }}
-                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                    className="flex min-h-10 w-full items-center justify-between rounded-lg px-2 text-left text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white active:bg-white/[.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]"
                   >
                     {item}
                     <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-200 ${mobileCompanyOpen ? "rotate-180" : ""}`} />
@@ -612,7 +612,7 @@ export function SiteHeader({
                 <Link
                   key={item}
                   aria-current={activeNav === "blog" ? "page" : undefined}
-                  className={activeNav === "blog" ? "flex min-h-10 items-center rounded-lg border-b border-white/[.06] bg-[#0b75ff]/15 px-2 text-sm font-semibold text-[#0b75ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]" : "flex min-h-10 items-center rounded-lg border-b border-white/[.06] px-2 text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"}
+                  className={activeNav === "blog" ? "flex min-h-10 items-center rounded-lg border-b border-white/[.06] bg-[var(--blue)]/15 px-2 text-sm font-semibold text-[var(--blue)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]" : "flex min-h-10 items-center rounded-lg border-b border-white/[.06] px-2 text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]"}
                   href={`/${language}/blog`}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -621,7 +621,7 @@ export function SiteHeader({
               ) : (
                 <a
                   key={item}
-                  className="flex min-h-10 items-center rounded-lg border-b border-white/[.06] px-2 text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#48a5ff]"
+                className="flex min-h-10 items-center rounded-lg border-b border-white/[.06] px-2 text-sm text-white/75 transition-colors hover:bg-white/[.05] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--blue)]"
                   href={sectionHref(navIds[index])}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -674,13 +674,13 @@ function LanguageSwitch({
               lang={locale}
               aria-label={name}
               aria-current={active ? "page" : undefined}
-              className={`relative isolate grid ${compact ? "h-9 min-w-9 px-2" : "h-9 min-w-10 px-2.5"} place-items-center rounded-full text-[11px] font-semibold tracking-wide transition-colors focus-visible:bg-[#0b75ff]/15 focus-visible:text-[#0b75ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48a5ff] ${active ? "text-[#0b75ff]" : "text-white/65 hover:text-white"}`}
+              className={`relative isolate grid ${compact ? "h-9 min-w-9 px-2" : "h-9 min-w-10 px-2.5"} place-items-center rounded-full text-[11px] font-semibold tracking-wide transition-colors focus-visible:bg-[var(--blue)]/15 focus-visible:text-[var(--blue)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] ${active ? "text-[var(--blue)]" : "text-white/65 hover:text-white"}`}
             >
               {active && (
                 <motion.span
                   layoutId="language-switch-active-pill"
                   aria-hidden="true"
-                  className="absolute inset-0 -z-10 rounded-full bg-[#0b75ff]/15"
+                  className="absolute inset-0 -z-10 rounded-full bg-[var(--blue)]/15"
                   initial={{ opacity: 0, scale: 0.78 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: "spring", stiffness: 420, damping: 30, mass: 0.7 }}

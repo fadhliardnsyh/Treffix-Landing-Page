@@ -125,18 +125,18 @@ export default async function ArticlePage({
 
           <div className="min-w-0">
             <nav aria-label={articleLabels.breadcrumb} className="mb-5 flex flex-wrap items-center gap-2 text-[11px] font-medium text-slate-500 sm:text-xs">
-              <Link href={`/${language}`} className="rounded-sm transition-colors hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+              <Link href={`/${language}`} className="rounded-sm transition-colors hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]">
                 {content.homeLabel}
               </Link>
               <span aria-hidden="true" className="text-slate-300">/</span>
-              <Link href={`/${language}/blog`} className="rounded-sm transition-colors hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+              <Link href={`/${language}/blog`} className="rounded-sm transition-colors hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]">
                 {content.blogEyebrow}
               </Link>
               <span aria-hidden="true" className="text-slate-300">/</span>
               <span aria-current="page" className="text-slate-700">{article.category[language]}</span>
             </nav>
 
-            <p className="inline-flex min-h-7 items-center rounded-full border border-blue-100 bg-blue-50 px-3 text-[10px] font-bold uppercase tracking-[.12em] text-blue-700">
+            <p className="section-eyebrow text-[10px] font-bold uppercase tracking-[.12em]">
               {article.category[language]}
             </p>
             <h1 className="mt-4 text-[clamp(2rem,4.4vw,3.75rem)] font-semibold leading-[1.04] tracking-[-.055em] text-[#101828] [text-wrap:balance]">
@@ -148,7 +148,7 @@ export default async function ArticlePage({
 
             <div className="mt-7 flex flex-col gap-5 border-t border-slate-200 pt-5 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="flex items-center gap-2.5 text-[12px] text-slate-500 sm:text-[13px]">
-                <CalendarDays size={16} className="shrink-0 text-blue-600" aria-hidden="true" />
+                <CalendarDays size={16} className="shrink-0 text-[var(--blue)]" aria-hidden="true" />
                 <time dateTime={article.publishedAt ?? undefined}>{publishedDate}</time>
               </div>
               <div aria-label={articleLabels.share} className="flex flex-wrap items-center gap-2">
@@ -159,7 +159,7 @@ export default async function ArticlePage({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${articleLabels.share}: ${item.label}`}
-                    className="inline-flex min-h-10 items-center rounded-full border border-slate-200 px-3.5 text-[11px] font-semibold text-slate-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    className="inline-flex min-h-10 items-center rounded-full border border-slate-200 px-3.5 text-[11px] font-semibold text-slate-600 transition-colors hover:border-[var(--blue)]/35 hover:bg-[var(--blue)]/5 hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]"
                   >
                     {item.label}
                     <ArrowUpRight size={12} className="ml-1.5" aria-hidden="true" />
@@ -175,13 +175,13 @@ export default async function ArticlePage({
             <details className="group rounded-2xl border border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,35,62,.035)] lg:hidden">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-[11px] font-bold uppercase tracking-[.12em] text-slate-500 [&::-webkit-details-marker]:hidden">
                 {articleLabels.contents}
-                <ChevronDown size={16} className="shrink-0 text-blue-600 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+                <ChevronDown size={16} className="shrink-0 text-[var(--blue)] transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
               </summary>
               <ol className="space-y-1 border-t border-slate-100 px-3 py-3">
                 {sectionLinks.map((section, index) => (
                   <li key={section.id}>
-                    <a href={`#${section.id}`} className="flex min-h-10 items-start gap-3 rounded-lg px-2.5 py-2 text-[13px] leading-5 text-slate-600 transition-colors hover:bg-blue-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-600">
-                      <span className="mt-0.5 shrink-0 font-mono text-[10px] text-blue-600">{String(index + 1).padStart(2, "0")}</span>
+                    <a href={`#${section.id}`} className="flex min-h-10 items-start gap-3 rounded-lg px-2.5 py-2 text-[13px] leading-5 text-slate-600 transition-colors hover:bg-[var(--blue)]/5 hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--blue)]">
+                      <span className="mt-0.5 shrink-0 font-mono text-[10px] text-[#071a35]">{String(index + 1).padStart(2, "0")}</span>
                       <span>{section.heading}</span>
                     </a>
                   </li>
@@ -194,8 +194,8 @@ export default async function ArticlePage({
               <ol className="mt-4 space-y-1">
                 {sectionLinks.map((section, index) => (
                   <li key={section.id}>
-                    <a href={`#${section.id}`} className="flex items-start gap-3 rounded-lg px-2.5 py-2.5 text-[12px] leading-5 text-slate-600 transition-colors hover:bg-blue-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-600">
-                      <span className="mt-0.5 shrink-0 font-mono text-[10px] text-blue-600">{String(index + 1).padStart(2, "0")}</span>
+                    <a href={`#${section.id}`} className="flex items-start gap-3 rounded-lg px-2.5 py-2.5 text-[12px] leading-5 text-slate-600 transition-colors hover:bg-[var(--blue)]/5 hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--blue)]">
+                      <span className="mt-0.5 shrink-0 font-mono text-[10px] text-[#071a35]">{String(index + 1).padStart(2, "0")}</span>
                       <span>{section.heading}</span>
                     </a>
                   </li>
@@ -223,7 +223,7 @@ export default async function ArticlePage({
               );
             })}
 
-            <Link href={`/${language}/blog`} className="mt-10 inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 px-5 text-[12px] font-semibold text-slate-700 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-600">
+            <Link href={`/${language}/blog`} className="mt-10 inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 px-5 text-[12px] font-semibold text-slate-700 transition-colors hover:border-[var(--blue)]/35 hover:bg-[var(--blue)]/5 hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--blue)]">
               {content.blogBack}
               <ArrowRight size={14} aria-hidden="true" />
             </Link>
@@ -238,7 +238,7 @@ export default async function ArticlePage({
                   {articleLabels.related}
                 </h2>
               </div>
-              <Link href={`/${language}/blog`} className="inline-flex min-h-10 shrink-0 items-center gap-2 text-[12px] font-semibold text-blue-700 transition-colors hover:text-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-600">
+              <Link href={`/${language}/blog`} className="inline-flex min-h-10 shrink-0 items-center gap-2 text-[12px] font-semibold text-[#071a35] transition-colors hover:text-[#071a35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--blue)]">
                 {content.blogViewAll}
                 <ArrowRight size={14} aria-hidden="true" />
               </Link>
