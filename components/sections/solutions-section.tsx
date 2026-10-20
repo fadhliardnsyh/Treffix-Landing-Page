@@ -449,12 +449,8 @@ function ProductVisual({ product, language }: { product: Product; language: Lang
 }
 
 function ProductMark({ product }: { product: Product }) {
-  if (product.id === "FixTrack") {
-    return <Image src="/fixtrack-icon-blue.svg" alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />;
+  if (product.logo) {
+    return <Image src={product.logo} alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />;
   }
-  if (product.id === "FixWork") {
-    return <Image src="/fixwork-blue.svg" alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />;
-  }
-  // Temporary product-mark placeholder until the official FixSight logo is available.
   return <Camera aria-hidden="true" className="h-5 w-5 text-[var(--blue)]" strokeWidth={1.8} />;
 }

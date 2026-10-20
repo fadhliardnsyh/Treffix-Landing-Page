@@ -16,7 +16,7 @@ type OrbitProduct = {
 const orbitProducts: readonly OrbitProduct[] = [
   { id: "FixTrack", icon: null, logo: "/fixtrack-icon-blue.svg", step: 0, x: 18.33, y: 25, path: "M 110 105 C 165 105 166 142 226 146", turns: [] },
   { id: "FixWork", icon: null, logo: "/fixwork-blue.svg", step: 2, x: 81.67, y: 25, path: "M 490 105 C 435 105 434 142 374 146", turns: [] },
-  { id: "FixSight", icon: Camera, logo: undefined, step: 1, x: 50, y: 84, path: "M 300 353 C 300 332 300 314 300 293", turns: [] },
+  { id: "FixSight", icon: Camera, logo: "/fixsight-logo.svg", step: 1, x: 50, y: 84, path: "M 300 353 C 300 332 300 314 300 293", turns: [] },
 ];
 
 export function ProductOrbit({
