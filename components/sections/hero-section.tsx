@@ -3,8 +3,11 @@ import type { Copy, Lang } from "@/components/content";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroVideo } from "@/components/sections/hero-video";
+import { TREFFIX_WHATSAPP_PHONE } from "@/components/site-contact";
 
 export function HeroSection({ content, language }: { content: Copy; language: Lang }) {
+  const whatsappHref = `https://wa.me/${TREFFIX_WHATSAPP_PHONE}?text=${encodeURIComponent(content.headerConsultationMessage)}`;
+
   return (
     <section id="top" className="hero-section relative overflow-hidden bg-black text-white">
       <HeroVideo />
@@ -35,9 +38,9 @@ export function HeroSection({ content, language }: { content: Copy; language: La
                 {content.explore}
                 <ArrowRight size={15} className="transition group-hover:translate-x-1" />
               </ButtonLink>
-              <ButtonLink href="#about" variant="secondary" className="min-h-12 bg-black/25 px-5 text-[13px] backdrop-blur-sm hover:bg-black/40">
-                {language === "id" ? "Kenali Treffix" : "Meet Treffix"}
-                <ArrowDown size={14} />
+              <ButtonLink href={whatsappHref} target="_blank" rel="noopener noreferrer" variant="secondary" className="min-h-12 bg-black/25 px-5 text-[13px] backdrop-blur-sm hover:bg-black/40">
+                {content.headerConsultationCta}
+                <ArrowRight size={14} />
               </ButtonLink>
             </div>
           </Reveal>

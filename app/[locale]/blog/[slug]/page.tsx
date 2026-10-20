@@ -6,9 +6,10 @@ import { notFound } from "next/navigation";
 import { articles, getArticle, articleHref, type Article } from "@/components/content/articles";
 import { articlePageCopy, copy, type Lang } from "@/components/content";
 import { ArticleCard } from "@/components/sections/article-card";
+import { siteUrl } from "@/lib/site";
+import { getSocialImageUrl } from "@/lib/social-image";
 
 const supportedLanguages: Lang[] = ["id", "en"];
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://treffix.id";
 
 function getLanguage(locale: string): Lang | undefined {
   return supportedLanguages.find((language) => language === locale);
@@ -69,6 +70,7 @@ export async function generateMetadata({
   const article = getArticle(slug);
 
   if (!language || !article) notFound();
+  const socialImage = getSocialImageUrl(article.image);
 
   return {
     title: `${article.title[language]} | Treffix`,
@@ -76,9 +78,16 @@ export async function generateMetadata({
     openGraph: {
       title: `${article.title[language]} | Treffix`,
       description: article.description[language],
+      siteName: "Treffix",
       type: "article",
-      images: [{ url: article.image, alt: article.imageAlt[language] }],
+      images: [{ url: socialImage, type: "image/jpeg", alt: article.imageAlt[language] }],
       ...(article.publishedAt ? { publishedTime: article.publishedAt } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${article.title[language]} | Treffix`,
+      description: article.description[language],
+      images: [{ url: socialImage, alt: article.imageAlt[language] }],
     },
   };
 }

@@ -95,6 +95,9 @@ export function AboutSection({ content, language }: { content: Copy; language: L
         <div className="container-wide relative mx-auto w-full">
           <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 -z-0 h-[min(75vw,680px)] w-[min(75vw,680px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--blue)_5.5%,transparent),transparent_70%)]" />
           <div className="relative z-10 mx-auto max-w-[1120px] text-center">
+            <p className="section-eyebrow mb-5 text-[10px] font-bold uppercase tracking-[.17em]">
+              {content.aboutEyebrow}
+            </p>
             <h2
               ref={titleRef}
               aria-label={content.aboutTitle}

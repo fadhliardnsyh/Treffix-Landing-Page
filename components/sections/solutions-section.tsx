@@ -62,6 +62,7 @@ export function SolutionsSection({
     FixSight: { primary: content.fixSightPrimaryCta, secondary: content.fixSightSecondaryCta },
   };
   const activeCtas = productCtas[activeProduct.id];
+  const solutionsEyebrow = override?.eyebrow ?? content.solutionsEyebrow;
   const solutionsTitle = override?.title ?? content.solutionsTitle;
   const solutionsTitleLabel = solutionsTitle;
   const emphasizedTitlePhrase = language === "en"
@@ -166,11 +167,9 @@ export function SolutionsSection({
           className="grid w-full gap-3 sm:gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(260px,.8fr)] lg:items-end lg:gap-10"
         >
           <div>
-            {override?.eyebrow && (
-              <p className="section-eyebrow mb-3 text-[10px] font-bold uppercase tracking-[.18em]">
-                {override.eyebrow}
-              </p>
-            )}
+            <p className="section-eyebrow mb-3 text-[10px] font-bold uppercase tracking-[.18em]">
+              {solutionsEyebrow}
+            </p>
             <h2 className="max-w-[760px] text-[clamp(1.6rem,3.2vw,3rem)] font-medium leading-[1.08] tracking-[-.05em]">
               {solutionsTitleParts.length === 2 ? (
                 <>

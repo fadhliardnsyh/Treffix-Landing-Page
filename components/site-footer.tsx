@@ -60,6 +60,9 @@ export function SiteFooter({
     { label: content.footerByRole, href: `/${language}#solutions` },
     { label: content.footerByIndustry, href: `/${language}#industries` },
   ];
+  const displayedCtaTitle = ctaTitle ?? content.ctaTitle;
+  const highlightedPhrase = "Solusi Digital";
+  const highlightedPhraseIndex = displayedCtaTitle.indexOf(highlightedPhrase);
   const socialItems = [
     socialLinks?.instagram ? { label: "Instagram", href: socialLinks.instagram, icon: "instagram" as const } : null,
     socialLinks?.linkedin ? { label: "LinkedIn", href: socialLinks.linkedin, icon: "linkedin" as const } : null,
@@ -69,15 +72,29 @@ export function SiteFooter({
   return (
     <div id="contact" className="relative isolate overflow-hidden bg-black text-white">
       <ContactCtaRouteVisibility>
-        <section aria-labelledby="contact-cta-title" className="bg-white px-5 py-24 text-center text-[#101828] sm:px-6 sm:py-32 lg:py-36">
-          <div className="mx-auto flex max-w-[820px] flex-col items-center">
-            <h2 id="contact-cta-title" className="max-w-[760px] text-[clamp(2.15rem,5.3vw,4.25rem)] font-semibold leading-[1.08] tracking-[-.055em] text-[#101828] [text-wrap:balance]">
-              {ctaTitle ?? content.ctaTitle}
-            </h2>
-            <ButtonLink href={contactHref} className="group mt-8 min-h-12 gap-3 px-6 text-[12px]">
-              {content.ctaButton}
-              <ArrowUpRight size={15} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </ButtonLink>
+        <section aria-labelledby="contact-cta-title" className="bg-white py-12 sm:py-16 lg:py-20">
+          <div className="container-wide mx-auto">
+            <div className="relative isolate flex flex-col gap-7 overflow-hidden rounded-2xl border border-white/[.06] bg-black px-6 py-8 text-white shadow-[0_14px_42px_rgba(7,26,53,.12)] sm:gap-8 sm:rounded-[24px] sm:px-9 sm:py-9 lg:flex-row lg:items-center lg:justify-between lg:px-12 lg:py-10">
+              <div aria-hidden="true" className="cta-orbit-ring cta-orbit-ring-outer pointer-events-none absolute -right-24 -top-40 -z-10 size-[25rem] rounded-full border border-[var(--blue)]/[.14]" />
+              <div aria-hidden="true" className="cta-orbit-ring cta-orbit-ring-inner pointer-events-none absolute -right-9 -top-24 -z-10 size-[17rem] rounded-full border border-[var(--blue)]/[.23]" />
+              <div aria-hidden="true" className="cta-border-beam pointer-events-none absolute inset-0 z-20 rounded-[inherit] p-[3px]" />
+              <div className="min-w-0 max-w-[760px]">
+                <h2 id="contact-cta-title" className="text-[clamp(1.6rem,3.2vw,2.5rem)] font-semibold leading-[1.12] tracking-[-.045em] text-white [text-wrap:balance]">
+                  {highlightedPhraseIndex < 0 ? displayedCtaTitle : <>
+                    {displayedCtaTitle.slice(0, highlightedPhraseIndex)}
+                    <span className="text-[var(--blue)]">{highlightedPhrase}</span>
+                    {displayedCtaTitle.slice(highlightedPhraseIndex + highlightedPhrase.length)}
+                  </>}
+                </h2>
+                <p className="mt-3 max-w-[620px] text-[14px] leading-6 text-white/75 sm:text-[15px] sm:leading-7">
+                  {content.ctaText}
+                </p>
+              </div>
+              <ButtonLink href={contactHref} className="static-motion min-h-12 w-fit shrink-0 gap-3 px-6 text-[12px] sm:text-[13px]">
+                {content.ctaButton}
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </ButtonLink>
+            </div>
           </div>
         </section>
       </ContactCtaRouteVisibility>
@@ -94,7 +111,7 @@ export function SiteFooter({
                   <ul className="flex items-center gap-2">
                     {socialItems.map(({ label, href, icon }) => (
                       <li key={label}>
-                        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)] ${icon === "linkedin" ? "bg-white/[.05] text-[var(--blue)] hover:bg-[var(--blue)] hover:text-black" : "bg-white/[.06] text-[var(--blue)] hover:bg-white/[.1] hover:text-[var(--blue)]"}`}>
+                        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-white/[.06] text-[var(--blue)] transition-colors duration-200 ease-out hover:bg-[var(--blue)] hover:text-white focus-visible:bg-[var(--blue)] focus-visible:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]">
                           {icon === "instagram" ? <InstagramIcon /> : <LinkedInIcon />}
                         </a>
                       </li>

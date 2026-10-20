@@ -32,6 +32,9 @@ export function SiteHeader({
   const [mobileCustomersOpen, setMobileCustomersOpen] = useState(false);
   const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const lastScrollYRef = useRef(0);
+  const scrollDeltaRef = useRef(0);
   const reduceMotion = useReducedMotion();
   const pathname = usePathname() || "";
   const activeNav = pathname.split("/").includes("blog") ? "blog" : undefined;
@@ -126,11 +129,39 @@ export function SiteHeader({
       };
 
   useEffect(() => {
-    const updateScrollState = () => setIsScrolled(window.scrollY > 12);
-    updateScrollState();
+    lastScrollYRef.current = window.scrollY;
+    scrollDeltaRef.current = 0;
+    setIsScrolled(window.scrollY > 12);
+    setIsHeaderHidden(window.scrollY > 64);
+
+    const updateScrollState = () => {
+      const scrollY = window.scrollY;
+      const delta = scrollY - lastScrollYRef.current;
+      lastScrollYRef.current = scrollY;
+      setIsScrolled(scrollY > 12);
+
+      if (scrollY <= 12) {
+        scrollDeltaRef.current = 0;
+        setIsHeaderHidden(false);
+        return;
+      }
+
+      scrollDeltaRef.current += delta;
+      if (scrollDeltaRef.current >= 5) {
+        scrollDeltaRef.current = 0;
+        setIsHeaderHidden(true);
+        setSolutionsOpen(false);
+        setCustomersOpen(false);
+        setCompanyOpen(false);
+        setMenuOpen(false);
+      } else if (scrollDeltaRef.current <= -5) {
+        scrollDeltaRef.current = 0;
+        setIsHeaderHidden(false);
+      }
+    };
     window.addEventListener("scroll", updateScrollState, { passive: true });
     return () => window.removeEventListener("scroll", updateScrollState);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!solutionsOpen && !customersOpen && !companyOpen && !menuOpen) return;
@@ -169,7 +200,15 @@ export function SiteHeader({
   }, [solutionsOpen, customersOpen, companyOpen, menuOpen]);
 
   return (
-    <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 text-white">
+    <motion.header
+      ref={headerRef}
+      className="fixed inset-x-0 top-0 z-50 text-white"
+      inert={isHeaderHidden}
+      initial={false}
+      animate={{ y: isHeaderHidden ? "-100%" : "0%" }}
+      transition={{ duration: reduceMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+      style={{ pointerEvents: isHeaderHidden ? "none" : "auto" }}
+    >
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 z-0"
@@ -641,7 +680,7 @@ export function SiteHeader({
           </motion.nav>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }
 

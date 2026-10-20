@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Lang } from "@/components/content";
 import { customerPages, getCustomerLabel } from "@/components/content/customers";
 import { CustomerDetailPage } from "@/components/sections/customer-detail-page";
+import { getSocialImageUrl } from "@/lib/social-image";
 
 export function generateStaticParams() {
   return ["id", "en"].flatMap((locale) =>
@@ -21,9 +22,23 @@ export async function generateMetadata({
   const label = getCustomerLabel(slug, language);
   const page = customerPages[slug];
   if (!label || !page) return {};
+  const socialImage = getSocialImageUrl(page.image);
   return {
     title: `${label} | Treffix`,
     description: page[language].intro,
+    openGraph: {
+      type: "website",
+      siteName: "Treffix",
+      title: `${label} | Treffix`,
+      description: page[language].intro,
+      images: [{ url: socialImage, type: "image/jpeg", alt: page.imageAlt[language] }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${label} | Treffix`,
+      description: page[language].intro,
+      images: [{ url: socialImage, alt: page.imageAlt[language] }],
+    },
   };
 }
 

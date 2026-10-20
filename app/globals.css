@@ -42,6 +42,100 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@property --cta-beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes cta-border-beam {
+  to { --cta-beam-angle: 360deg; }
+}
+
+@keyframes cta-border-beam-glow {
+  0%, 100% {
+    opacity: .88;
+    filter: drop-shadow(0 0 5px rgb(11 117 255 / 42%));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgb(11 117 255 / 62%));
+  }
+}
+
+@property --cta-orbit-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes cta-orbit-travel {
+  to { --cta-orbit-angle: 360deg; }
+}
+
+.cta-orbit-ring::after {
+  --cta-orbit-angle: 0deg;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--cta-orbit-angle),
+    transparent 0deg 322deg,
+    color-mix(in srgb, var(--blue) 38%, transparent) 338deg,
+    color-mix(in srgb, var(--blue) 78%, transparent) 348deg,
+    color-mix(in srgb, #8bd3ff 52%, var(--blue)) 353deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: .82;
+  filter: drop-shadow(0 0 3px rgb(11 117 255 / 24%));
+  animation: cta-orbit-travel 36s linear infinite;
+}
+
+.cta-orbit-ring-inner::after {
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+
+.cta-border-beam {
+  --cta-beam-angle: 0deg;
+  background: conic-gradient(
+    from var(--cta-beam-angle),
+    transparent 0deg 312deg,
+    color-mix(in srgb, var(--blue) 68%, transparent) 329deg,
+    var(--blue) 350deg,
+    color-mix(in srgb, #a5dcff 86%, var(--blue)) 356deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: cta-border-beam 12s linear infinite, cta-border-beam-glow 4.2s ease-in-out infinite;
+}
+
+.micro-interaction.static-motion:hover,
+.micro-interaction.static-motion:active,
+.button-primary.static-motion:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: none;
+}
+
+@media (max-width: 639px) {
+  .cta-border-beam { animation-duration: 15.5s, 4.8s; }
+  .cta-orbit-ring::after { animation-duration: 42s; }
+  .cta-orbit-ring-inner::after { animation-duration: 34s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-border-beam { display: none; }
+  .cta-orbit-ring::after { display: none; }
+}
+
 .mega-menu-icon-container {
   border: 1px solid rgb(255 255 255 / 5%);
   background-color: rgb(255 255 255 / 5%);
